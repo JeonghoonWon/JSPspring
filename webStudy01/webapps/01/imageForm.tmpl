@@ -1,0 +1,63 @@
+<html>
+<head>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript">
+//	$(document).on("ready",function(){
+		
+//	});
+	
+	$(function(){
+		const SRCPTRN = "%A?%N=%V";
+ 			console.log($("form")[0]);
+ 			const action = $("form")[0].action;
+		
+//		console.log($("#image"));
+		$("#image").on("change",function(event){
+			$("#imageArea").empty();
+			
+			//select 와 callback 함수
+/* 			console.log(this.value); // this = select teg / html 형식이기 때문에 value로 값을 가져와야한다.
+			console.log($(this).val());
+		this.form.submit();
+		 */				
+ 			// img 태그 생성
+		 	var name = this.name; // $(this).attr("name")
+		 	var values = $(this).val(); //$(this).val()
+		 	var imgs = [];
+		 	$(values).each(function(idx,value){
+ 				var src = SRCPTRN.replace("%A", action)
+ 							 	 .replace("%N", name)
+ 							 	 .replace("%V", value);
+ 				var img = $("<img>").attr("src",src);
+ 				imgs.push(img);
+		 	});
+		 	console.log(values)
+		 	
+ 			// imageArea에 img 태그를 innerHTML 로 삽입
+ 	
+ 			$("#imageArea").append(imgs); 
+ 			
+		});	
+				
+	});
+	</script>
+</head>
+<body>
+
+<h4>%today%</h4>
+<form action = 'image.do'>
+<select name = "image" id="image" multiple>
+%options%
+</select>
+<input type="submit" value ="전송" style="background-color: red;"/>
+</form>
+<div id="imageArea"></div>
+<script type="text/javascript">
+/* 	var select = document.querySelector("#image")
+	select.onchange = function(event){
+		event.target.form.submit();
+	} */
+</script>
+
+</body>
+</html>

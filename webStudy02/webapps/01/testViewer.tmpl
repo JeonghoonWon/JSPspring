@@ -1,0 +1,43 @@
+<html>
+	<body>
+		<h3>Text file viewer</h3> 
+		<select id='textFile'>
+				%options%
+		</select>
+		
+		<!-- src 속성의 주소값 : ex) textView.do?textFile=filename(path?) -->
+		<!-- src="textView.do?textFile=?" -->
+		<!-- 물음표 대신 filename 써야하는이유: 첫 화면에 404에러 뜨지않게 하기 위해서-->
+		<!--  --> 
+		<br><br>
+		<iframe id ="viewer" src="textView.do?textFile=indexNamesMap.txt"></iframe>
+<!-- 
+	mapping 정보는 textView.do 사용 
+	
+	기존에 있는거 뜯어보자. 이미지만 텍스트로 바꾼다고 생각해보자
+	컨테이너의 역할이 어떤지를 한번 더 확인해보는 시간
+
+-->	
+	</body>
+	<script type="text/javascript">
+	var select = document.querySelector("#textFile");
+	//querySelector 는 특정 name 이나 id 를 제한하지않고 css선택자를 사용하여 요소를 찾습니다.
+
+	//	(#sections) -> sections 아이디를 가진 요소를 찾습니다
+	//	(.section) -> section 클래스명을 가진 요소를 찾습니다
+
+//반환객체는 한개의 요소만 찾을수있으며 동일한 클래스명 을 가진 객체가 있을경우 html문서내의 첫번째를 나타나는 요소를 반환합니다.
+
+	
+	select.onchange = function(event) {
+		var a = select.value;
+		console.log(a);
+		var iframe = document.querySelector("#viewer");
+		iframe.setAttribute("src", "textView.do?textFile="+a)
+		
+	}	
+	
+	</script>
+	
+</html>
+
