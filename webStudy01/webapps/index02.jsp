@@ -41,7 +41,7 @@
 		
 		
 		<form name="LogoutForm"  method="post"  action="<%=request.getContextPath()%>/login/logout02.do">
-		<%=authMember.getMem_name()%>님이 로그인 되었습니다 ^^!
+		<%=authMember.getMem_name()%>님이 로그인 되었습니다!!
 		<a href="#" >이메일</a>
 		<a href="#" onclick="clickHandler(event);">로그아웃</a>
 		<script type="text/javascript">
@@ -65,6 +65,7 @@
 		
 		%>
 		<a href="<%=request.getContextPath()%>/login/loginForm02.jsp">로그인페이지로</a>
+		<a href="<%=request.getContextPath() %>/member/memberInsert123.do">회원가입</a>
 		<% 
 		
 	}
