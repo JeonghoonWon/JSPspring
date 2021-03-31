@@ -100,7 +100,7 @@ public class MemberDAOImpl implements IMemberDAO {
 		sql.append("    MEM_ZIP,    MEM_ADD1,    MEM_ADD2,                  ");
 		sql.append("    MEM_HOMETEL,    MEM_COMTEL,    MEM_HP,              ");
 		sql.append("    MEM_MAIL,    MEM_JOB,    MEM_LIKE,                  ");
-		sql.append("    MEM_MEMORIAL,    MEM_MEMORIALDAY,    MEM_MILEAGE,   ");
+		sql.append("    MEM_MEMORIAL,    MEM_MEMORIALDAY,    MEM_MILEAGE   ");
 		sql.append("    )                                                   ");
 		sql.append(" VALUES (                                               ");
 		sql.append("		?,    ?,    ?,                                  ");
@@ -117,23 +117,23 @@ public class MemberDAOImpl implements IMemberDAO {
 						PreparedStatement pstmt = conn.prepareStatement(sql.toString());	
 						){
 					int i = 1;
-					pstmt.setString(i++,member.getMem_id());
-					pstmt.setString(i++,member.getMem_pass());
-					pstmt.setString(i++,member.getMem_name());
-					pstmt.setString(i++,member.getMem_regno1());
-					pstmt.setString(i++,member.getMem_regno2());
-					pstmt.setString(i++,member.getMem_bir());
-					pstmt.setString(i++,member.getMem_zip());
-					pstmt.setString(i++,member.getMem_add1());
-					pstmt.setString(i++,member.getMem_add2());
-					pstmt.setString(i++,member.getMem_hometel());
-					pstmt.setString(i++,member.getMem_comtel());
-					pstmt.setString(i++,member.getMem_hp());
-					pstmt.setString(i++,member.getMem_mail());
-					pstmt.setString(i++,member.getMem_job());
-					pstmt.setString(i++,member.getMem_like());
-					pstmt.setString(i++,member.getMem_memorial());
-					pstmt.setString(i++,member.getMem_memorialday());
+					pstmt.setString(i++, member.getMem_id());
+					pstmt.setString(i++, member.getMem_pass());
+					pstmt.setString(i++, member.getMem_name());
+					pstmt.setString(i++, member.getMem_regno1());
+					pstmt.setString(i++, member.getMem_regno2());
+					pstmt.setString(i++, member.getMem_bir());
+					pstmt.setString(i++, member.getMem_zip());
+					pstmt.setString(i++, member.getMem_add1());
+					pstmt.setString(i++, member.getMem_add2());
+					pstmt.setString(i++, member.getMem_hometel());
+					pstmt.setString(i++, member.getMem_comtel());
+					pstmt.setString(i++, member.getMem_hp());
+					pstmt.setString(i++, member.getMem_mail());
+					pstmt.setString(i++, member.getMem_job());
+					pstmt.setString(i++, member.getMem_like());
+					pstmt.setString(i++, member.getMem_memorial());
+					pstmt.setString(i++, member.getMem_memorialday());
 					return pstmt.executeUpdate();
 					
 					

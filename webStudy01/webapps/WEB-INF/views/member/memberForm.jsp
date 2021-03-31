@@ -31,7 +31,7 @@
 		scope="request" />
 
 
-	<form method=post>
+	<form method="post">
 		<table>
 			<tr>
 				<th>회원아이디</th>
