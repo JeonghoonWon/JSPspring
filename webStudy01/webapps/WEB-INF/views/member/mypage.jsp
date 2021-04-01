@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<jsp:include page="/includee/preScript.jsp" />
 </head>
 <body>
 	<jsp:useBean id="member" class="kr.or.ddit.vo.MemberVO" scope="request" />
@@ -89,6 +90,29 @@
 			<th>회원삭제</th>
 			<td><%=member.getMem_delete()%></td>
 		</tr>
+		
+			<td colspan="2">
+				<input type = "button" value = "수정" class ="controlBtn" id = "updateBtn">
+				
+				<button type = "button" class ="controlBtn" id="deleteBtn">탈퇴</button>
+			</td>
+			<tr>
 	</table>
+	<script type="text/javascript">
+		$(".controlBtn").on("click", function(){
+			let btnId = $(this).prop("id");
+			if(btnId =="updateBtn"){
+				//alert("수정")
+				location.href="<%=request.getContextPath() %>/member/memberUpdate.do";
+			}else if(btnId =="deleteBtn"){
+				alert("탈퇴")
+			}
+			
+			
+			///member/memberUpdate.do
+		});
+		
+	</script>
+	
 </body>
 </html>

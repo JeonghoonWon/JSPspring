@@ -11,6 +11,7 @@
 	color: red;
 }
 </style>
+<jsp:include page="/includee/preScript.jsp" />
 <%
 	String message = (String) request.getAttribute("message");
 	if(message !=null && !message.isEmpty()){
@@ -25,23 +26,47 @@
 
 </head>
 <body>
-	<h4>가입양식</h4>
+		<%
+				String command = (String) request.getAttribute("command");
+				if(!"update".equals(command)){
+			%>
+			<h4>가입양식</h4>
+			<%
+				}else{
+			%>
+			<h4>회원 정보 수정</h4>
+			<%
+			}
+			%>
 	<jsp:useBean id="member" class="kr.or.ddit.vo.MemberVO" scope="request" />
 	<jsp:useBean id="errors" class="java.util.LinkedHashMap"
 		scope="request" />
 
 
-	<form method="post">
+	<form method="post" id="memberForm" >
+
 		<table>
+			
+			<%
+				if(!"update".equals(command)){
+			%>
+		
 			<tr>
 				<th>회원아이디</th>
 				<td><input type="text" name="mem_id" required
-					value="<%=Objects.toString(member.getMem_id(), "")%>" /><span class="error"><%=Objects.toString(errors.get("mem_id"), "")%></span></td>
+					value="<%=Objects.toString(member.getMem_id(), "")%>" /><span class="error"><%=Objects.toString(errors.get("mem_id"), "")%></span>
+					<button type="button" id="idCheck">아이디중복체크</button>
+					</td>
 			</tr>
+			<%
+			}
+			%>
+			
+			
 			<tr>
 				<th>회원비밀번호</th>
 				<td><input type="text" name="mem_pass" required
-					value="<%=member.getMem_pass()%>" /><span class="error"><%=errors.get("mem_pass")%></span></td>
+					value="" /><span class="error"><%=errors.get("mem_pass")%></span></td>
 			</tr>
 			<tr>
 				<th>회원이름</th>
@@ -135,5 +160,14 @@
 			</tr>
 		</table>
 	</form>
+<%
+if(!"update".equals(command)){
+%>	
+<script type ="text/javascript" src="<%=request.getContextPath() %>/js/member/memberForm.js">
+<%
+}
+%>
+</script>	
+
 </body>
 </html>
