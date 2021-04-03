@@ -63,7 +63,7 @@
 	 		jsp는 다양한 언어를 사용한다.
 	 		- client side comment : html, javascript, css
 	 		- server side comment : jsp,java
-	 		다양한 주석을 사용할 수 있으나 client 에게 공개 가 된다.
+	 		다양한 주석을 사용할 수 있으나 client 에게 공개가 된다.
 	 		jsp, java 주석은 server 주석이기때문에 이걸 사용하는게 좋다.
 	 		
 	 	3. 기본객체
