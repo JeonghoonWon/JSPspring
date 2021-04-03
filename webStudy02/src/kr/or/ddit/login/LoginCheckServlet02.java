@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import kr.or.ddit.enumpkg.ServiceResult;
-import kr.or.ddit.member.service.AuthenticateServiceImpl;
-import kr.or.ddit.member.service.IAuthenticateService;
+import kr.or.ddit.member.service.AuthenticateServiceImpl_test;
+import kr.or.ddit.member.service.IAuthenticateService_test;
 import kr.or.ddit.vo.MemberVO;
 
 @WebServlet("/login/loginCheck02.do")
@@ -20,7 +20,7 @@ public class LoginCheckServlet02 extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
 
-	private IAuthenticateService service = new AuthenticateServiceImpl();
+	private IAuthenticateService_test service = new AuthenticateServiceImpl_test();
 	
 	
    @Override

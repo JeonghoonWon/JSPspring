@@ -1,6 +1,5 @@
 package kr.or.ddit.member.service;
 
-import java.rmi.UnexpectedException;
 import java.util.List;
 
 import kr.or.ddit.enumpkg.ServiceResult;
@@ -11,6 +10,9 @@ import kr.or.ddit.vo.MemberVO;
 
 public class MemberServiceImpl implements IMemberService {
 	private IMemberDAO dao = new MemberDAOImpl();
+	private IAuthenticateService authService = new AuthenticateServiceImpl();
+	
+	
 	
 	@Override
 	public MemberVO retrieveMember(String mem_id){
@@ -31,7 +33,7 @@ public class MemberServiceImpl implements IMemberService {
 				result = ServiceResult.OK;
 			}else {
 				result = ServiceResult.FAIL;
-			}
+			}// if(rowcnt>0) end
 		}else {
 			result = ServiceResult.PKDUPLICATED;
 		}
@@ -40,28 +42,35 @@ public class MemberServiceImpl implements IMemberService {
 
 	@Override
 	public ServiceResult modifyMember(MemberVO member) {
-		MemberVO savedMember = retrieveMember(member.getMem_id());
-		String savedPass = savedMember.getMem_pass();
-		String inputPass = member.getMem_pass();
-		ServiceResult result = null;
-		if(savedPass.equals(inputPass)) {
+		retrieveMember(member.getMem_id());	// 존재하는지 확인하기 위해 
+		ServiceResult result =
+				authService.authenticate(new MemberVO(member.getMem_id(),member.getMem_pass()));
+		
+		if(ServiceResult.OK.equals(result)) {
 			int rowcnt = dao.updateMember(member);
 			if(rowcnt > 0) {
 				result = ServiceResult.OK;
 			}else {
 				result = ServiceResult.FAIL;
 			}
-		}else {
-			result = ServiceResult.INVALIDPASSWORD;
-		}
-		
+		}		
 		return result;
 	}
 
 	@Override
 	public ServiceResult removeMember(MemberVO member) {
-		// TODO Auto-generated method stub
-		return null;
+		retrieveMember(member.getMem_id());	// 존재하는지 확인하기 위해 
+		ServiceResult result =
+				authService.authenticate(new MemberVO(member.getMem_id(),member.getMem_pass()));
+		if(ServiceResult.OK.equals(result)) {
+			int rowcnt = dao.deleteMember(member.getMem_id());
+			if(rowcnt > 0) {
+				result = ServiceResult.OK;
+			}else {
+				result = ServiceResult.FAIL;
+			}
+		}		
+		return result;
 	}
 
 	@Override

@@ -21,6 +21,8 @@ import kr.or.ddit.vo.MemberVO;
 
 @WebServlet("/member/memberInsert.do")
 public class MemberInsertServlet extends HttpServlet {
+	// extends HttpServlet : HttpServlet 을 상속받는다.
+	// 메소드를 오버라이딩 할 수 있게되고 이 클래스는 서블릿으로 동작하게 된다.
 	private IMemberService service = new MemberServiceImpl();
 
 	@Override
@@ -45,6 +47,13 @@ public class MemberInsertServlet extends HttpServlet {
 //		member.setMem_id(req.getParameter("mem_id"));
 		try {
 			BeanUtils.populate(member,req.getParameterMap());
+// org.apache.commons.beanutils.BeanUtils 은 Map을 bean객체로 바꾸어주는 클래스
+//		bean 객체에 memberVO 가 들어가있으니까 VO 객체로 바꾸는건가?
+//		jsp 에서 넘어온 값을 간단하게 java bean 객체에 맞추어 값을 넣어줌.
+//		request.getParameterMap() 에서 사용자 요청을 Map 형식으로 만들고, 
+// 		BeanUtils.populate(bean,  request.getParameterMap()) 메소드에서
+//		UserBean의 setName() 메소드에 자동으로 name값을 맵핑한다.
+
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			throw new RuntimeException(e);				
 		}
@@ -52,7 +61,7 @@ public class MemberInsertServlet extends HttpServlet {
 		Map<String, String> errors = new LinkedHashMap<>();
 		req.setAttribute("errors", errors);
 		boolean valid = validate(member, errors);
-		boolean redirect = false;
+		
 		String view = null;
 		String message = null;
 		if (valid) {
@@ -64,14 +73,13 @@ public class MemberInsertServlet extends HttpServlet {
 				message = "아이디 중복";
 				break;
 			case OK:
-				redirect = true;
-				view = "/login/loginForm.jsp";
+				view = "redirect:/login/loginForm.jsp";
 				break;
 			default:
 				view = "/WEB-INF/views/member/memberForm.jsp";
 				message = "서버오류 잠시 뒤 다시 시도하세요.";
 				break;
-			}
+			} // switch(result) end
 		} else {
 			// 검증 불통
 			view = "/WEB-INF/views/member/memberForm.jsp";
@@ -79,12 +87,14 @@ public class MemberInsertServlet extends HttpServlet {
 
 		req.setAttribute("message", message);
 
-		if (redirect) {
+		boolean redirect = view.startsWith("redirect:");
+		if(redirect) {
+			view = view.substring("redirect:".length());
 			resp.sendRedirect(req.getContextPath() + view);
-		} else {
-			req.getRequestDispatcher(view).forward(req, resp);
+		}else {
+		req.getRequestDispatcher(view).forward(req, resp);
+		
 		}
-
 	}
 
 	private boolean validate(MemberVO member, Map<String, String> errors) {

@@ -29,7 +29,7 @@ public interface IMemberDAO {
 	 * @param member
 	 * @return 등록된 row count > 0 성공
 	 */
-	public int insertMember(MemberVO member); // int : 몇개가 insert 됬는지
+	public int insertMember(MemberVO member); // int : 몇개가 insert 됐는지
 	
 	/**
 	 * 회원 정보 수정

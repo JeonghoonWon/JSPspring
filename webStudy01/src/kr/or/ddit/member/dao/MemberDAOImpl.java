@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import kr.or.ddit.db.ConnectionFactory;
@@ -18,21 +19,24 @@ public class MemberDAOImpl implements IMemberDAO {
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT MEM_ID, MEM_PASS, MEM_NAME, MEM_MAIL                 ");
 		sql.append(" FROM MEMBER                                       ");
-		sql.append(" WHERE MEM_ID = ?   ");
-		try (Connection conn = ConnectionFactory.getConnection();
+		sql.append(" WHERE MEM_ID = ?  AND MEM_DELETE IS NULL ");
+		try(
+			Connection conn = ConnectionFactory.getConnection();
 //			Statement stmt = conn.createStatement();	
-				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
+			// createStatement 와 PreparedStatement 다른점은 sql 을 먼저 정의하게 된다는 점.
+			PreparedStatement pstmt = conn.prepareStatement(sql.toString());	
+		){
 			pstmt.setString(1, mem_id);
 			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
+			if(rs.next()) {
 				member = new MemberVO();
 				member.setMem_id(rs.getString("MEM_ID"));
 				member.setMem_pass(rs.getString("MEM_PASS"));
 				member.setMem_name(rs.getString("MEM_NAME"));
 				member.setMem_mail(rs.getString("MEM_MAIL"));
-			}
-			return member;
-		} catch (SQLException e) {
+			}		
+			return member; //null이면 존재하지 않는 유저
+		}catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
 	}
@@ -53,12 +57,14 @@ public class MemberDAOImpl implements IMemberDAO {
 		sql.append("     MEM_MILEAGE, MEM_DELETE                                    ");
 		sql.append(" FROM    MEMBER                                                 ");
 		sql.append(" WHERE MEM_ID = ?                                               ");
-		try (Connection conn = ConnectionFactory.getConnection();
+		try(
+			Connection conn = ConnectionFactory.getConnection();
 //			Statement stmt = conn.createStatement();	
-				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
+			PreparedStatement pstmt = conn.prepareStatement(sql.toString());	
+		){
 			pstmt.setString(1, mem_id);
 			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
+			if(rs.next()) {
 				member = new MemberVO();
 				member.setMem_id(rs.getString("MEM_ID"));
 				member.setMem_pass(rs.getString("MEM_PASS"));
@@ -79,38 +85,35 @@ public class MemberDAOImpl implements IMemberDAO {
 				member.setMem_memorialday(rs.getString("MEM_MEMORIALDAY"));
 				member.setMem_mileage(rs.getInt("MEM_MILEAGE"));
 				member.setMem_delete(rs.getString("MEM_DELETE"));
-			}
+			}		
 			return member;
-		} catch (SQLException e) {
+		}catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
 	}
 
 	@Override
 	public int insertMember(MemberVO member) {
-
-		StringBuffer sql = new StringBuffer();
-
-		sql.append(" INSERT INTO MEMBER (                                   ");
-		sql.append("    MEM_ID,    MEM_PASS,    MEM_NAME,                   ");
-		sql.append("    MEM_REGNO1,    MEM_REGNO2,    MEM_BIR,              ");
-		sql.append("    MEM_ZIP,    MEM_ADD1,    MEM_ADD2,                  ");
-		sql.append("    MEM_HOMETEL,    MEM_COMTEL,    MEM_HP,              ");
-		sql.append("    MEM_MAIL,    MEM_JOB,    MEM_LIKE,                  ");
-		sql.append("    MEM_MEMORIAL,    MEM_MEMORIALDAY,    MEM_MILEAGE   ");
-		sql.append("    )                                                   ");
-		sql.append(" VALUES (                                               ");
-		sql.append("		?,    ?,    ?,                                  ");
-		sql.append("	    ?,    ?,    TO_DATE(?,'YYYY-MM-DD'),            ");
-		sql.append("	    ?,    ?,    ?,                                  ");
-		sql.append("	    ?,    ?,    ?,                                  ");
-		sql.append("	    ?,    ?,    ?,                                  ");
-		sql.append("	    ?,    TO_DATE(?,'YYYY-MM-DD'),    3000          ");
-		sql.append("    	)                                               ");
-
+		StringBuffer sql = new StringBuffer(); 
+		sql.append(" INSERT INTO MEMBER (                                      ");
+		sql.append("     MEM_ID,    MEM_PASS,    MEM_NAME,                     ");
+		sql.append("     MEM_REGNO1,    MEM_REGNO2,    MEM_BIR,                ");
+		sql.append("     MEM_ZIP,    MEM_ADD1,    MEM_ADD2,                    ");
+		sql.append("     MEM_HOMETEL,    MEM_COMTEL,    MEM_HP,                ");
+		sql.append("     MEM_MAIL,    MEM_JOB,    MEM_LIKE,                    ");
+		sql.append("     MEM_MEMORIAL,    MEM_MEMORIALDAY,    MEM_MILEAGE      ");
+		sql.append(" ) VALUES (                                                ");
+		sql.append(" 		?,    ?,    ?,                                     ");
+		sql.append(" 	    ?,    ?,    TO_DATE(?, 'YYYY-MM-DD'),              ");
+		sql.append(" 	    ?,    ?,    ?,                                     ");
+		sql.append(" 	    ?,    ?,    ?,                                     ");
+		sql.append(" 	    ?,    ?,    ?,                                     ");
+		sql.append(" 	    ?,    TO_DATE(?, 'YYYY-MM-DD'),    3000            ");
+		sql.append(" )															");
 		try (Connection conn = ConnectionFactory.getConnection();
-//			Statement stmt = conn.createStatement();	
+				//			Statement stmt = conn.createStatement();	
 				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
+
 			int i = 1;
 			pstmt.setString(i++, member.getMem_id());
 			pstmt.setString(i++, member.getMem_pass());
@@ -130,39 +133,34 @@ public class MemberDAOImpl implements IMemberDAO {
 			pstmt.setString(i++, member.getMem_memorial());
 			pstmt.setString(i++, member.getMem_memorialday());
 			return pstmt.executeUpdate();
-
 		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
 	}
 
-		@Override
-		public int updateMember(MemberVO member) {
-			StringBuffer sql = new StringBuffer();
-		sql.append("	UPDATE MEMBER           ");
-		sql.append("    SET                     ");
-		sql.append("       MEM_NAME =?,         ");
-		sql.append("       MEM_BIR =?,          ");
-		sql.append("       MEM_ZIP =?,          ");
-		sql.append("       MEM_ADD1 =?,         ");
-		sql.append("       MEM_ADD2 =?,         ");
-		sql.append("       MEM_HOMETEL =?,      ");
-		sql.append("       MEM_COMTEL =?,       ");
-		sql.append("       MEM_HP =?,           ");
-		sql.append("       MEM_MAIL =?,         ");
-		sql.append("       MEM_JOB =?,          ");
-		sql.append("       MEM_LIKE =?,         ");
-		sql.append("       MEM_MEMORIAL =?,     ");
-		sql.append("       MEM_MEMORIALDAY =?   ");
-		sql.append("  WHERE                     ");
-		sql.append("	    MEM_ID =?           ");
-
+	@Override
+	public int updateMember(MemberVO member) {
+		StringBuffer sql = new StringBuffer(); 
+		sql.append(" UPDATE MEMBER            ");
+	    sql.append(" SET                      ");
+	    sql.append("     MEM_NAME =?,         ");
+	    sql.append("     MEM_BIR =?,          ");
+	    sql.append("     MEM_ZIP =?,          ");
+	    sql.append("     MEM_ADD1 =?,         ");
+	    sql.append("     MEM_ADD2 =?,         ");
+	    sql.append("     MEM_HOMETEL =?,      ");
+	    sql.append("     MEM_COMTEL =?,       ");
+	    sql.append("     MEM_HP =?,           ");
+	    sql.append("     MEM_MAIL =?,         ");
+	    sql.append("     MEM_JOB =?,          ");
+	    sql.append("     MEM_LIKE =?,         ");
+	    sql.append("     MEM_MEMORIAL =?,     ");
+	    sql.append("     MEM_MEMORIALDAY =?   ");
+		sql.append(" WHERE   MEM_ID =?        ");
 		
-		
-
 		try (Connection conn = ConnectionFactory.getConnection();
-//				Statement stmt = conn.createStatement();	
-					PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
+				//			Statement stmt = conn.createStatement();	
+				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
 
 			int i = 1;
 			pstmt.setString(i++, member.getMem_name());
@@ -180,22 +178,56 @@ public class MemberDAOImpl implements IMemberDAO {
 			pstmt.setString(i++, member.getMem_memorialday());
 			pstmt.setString(i++, member.getMem_id());
 			return pstmt.executeUpdate();
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new DataAccessException(e);
 		}
-	
 	}
 
 	@Override
 	public int deleteMember(String mem_id) {
-		// TODO Auto-generated method stub
-		return 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" UPDATE MEMBER  ");
+		sql.append(" SET MEM_DELETE = 'Y'  ");
+		sql.append(" WHERE MEM_ID = ?    ");
+		try (Connection conn = ConnectionFactory.getConnection();
+				//			Statement stmt = conn.createStatement();	
+				PreparedStatement pstmt = conn.prepareStatement(sql.toString());) {
+			pstmt.setString(1, mem_id);
+			return pstmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
 	}
 
 	@Override
 	public List<MemberVO> selectMemberList() {
-		// TODO Auto-generated method stub
-		return null;
+		List<MemberVO> memberList = new ArrayList<>();
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT MEM_ID, MEM_NAME, MEM_MAIL,                 ");
+		sql.append(" MEM_HP, MEM_MILEAGE, MEM_DELETE                                ");
+		sql.append(" FROM MEMBER ");
+		try(
+			Connection conn = ConnectionFactory.getConnection();
+//			Statement stmt = conn.createStatement();	
+			PreparedStatement pstmt = conn.prepareStatement(sql.toString());	
+		){
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				
+				MemberVO member = new MemberVO();
+				member.setMem_id(rs.getString("MEM_ID"));
+				member.setMem_name(rs.getString("MEM_NAME"));
+				member.setMem_mail(rs.getString("MEM_MAIL"));
+				member.setMem_hp(rs.getString("MEM_HP"));
+				member.setMem_mileage(rs.getInt("MEM_MILEAGE"));
+				
+				member.setMem_delete(rs.getString("MEM_DELETE"));
+			}		
+			return memberList;
+		}catch (SQLException e) {
+			throw new DataAccessException(e);
+		}
 	}
+
 
 }
