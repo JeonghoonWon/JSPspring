@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import kr.or.ddit.db.ConnectionFactory;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.member.service.AuthenticateServiceImpl;
@@ -23,6 +26,10 @@ import kr.or.ddit.vo.MemberVO;
 
 @WebServlet("/login/loginCheck.do")
 public class LoginCheckServlet extends HttpServlet{
+	// static final : logger 는 하나만 있으면 된다.
+	private static final Logger logger = 
+			LoggerFactory.getLogger(LoginCheckServlet.class);
+			
 	private IAuthenticateService service =
 			new AuthenticateServiceImpl();
 	
@@ -44,9 +51,13 @@ public class LoginCheckServlet extends HttpServlet{
 		if(valid) {
 //		인증(id==password)
 			MemberVO member = new MemberVO(mem_id, mem_pass);
+			if(logger.isDebugEnabled())
+				logger.debug("인증전 MemberVO :{} ", member);
 			ServiceResult result = service.authenticate(member);
 			switch (result) {
 			case OK:
+				if(logger.isInfoEnabled())
+					logger.info("인증후 MemberVO :{} ", member);
 				redirect = true;
 				view = "/";
 				session.setAttribute("authMember", member);

@@ -9,7 +9,8 @@ import kr.or.ddit.member.dao.MemberDAOImpl;
 import kr.or.ddit.vo.MemberVO;
 
 public class MemberServiceImpl implements IMemberService {
-	private IMemberDAO dao = new MemberDAOImpl();
+	private IMemberDAO dao = MemberDAOImpl.getInstance();
+	// 결합력을 낮춰야 함.
 	private IAuthenticateService authService = new AuthenticateServiceImpl();
 	
 	
@@ -75,8 +76,8 @@ public class MemberServiceImpl implements IMemberService {
 
 	@Override
 	public List<MemberVO> retrieveMemberList() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return dao.selectMemberList();
 	}
 
 }

@@ -1,6 +1,7 @@
 package kr.or.ddit.member.service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -10,7 +11,7 @@ import kr.or.ddit.member.dao.MemberDAOImpl;
 import kr.or.ddit.vo.MemberVO;
 
 public class AuthenticateServiceImpl implements IAuthenticateService {
-	private IMemberDAO dao = new MemberDAOImpl();
+	private IMemberDAO dao = MemberDAOImpl.getInstance();
 	
 	@Override
 	public ServiceResult authenticate(MemberVO member) {
