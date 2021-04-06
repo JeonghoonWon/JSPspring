@@ -6,6 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<jsp:include page="/includee/preScript.jsp" />
 </head>
 <body>
 <%
@@ -57,9 +58,18 @@
 		<tr><th>할인수량</th><td><%=prod.getProd_qtysale() %></td></tr>
 		<tr><th>마일리지</th><td><%=prod.getProd_mileage() %></td></tr>
 		
+		<tr>
+			<td colspan="2">
+					<button type = "button" id = "prodList">상품목록으로</button>
+			</td>
+		</tr>
 </table>
+<script type="text/javascript">
+$("#prodList").on("click",function(){
+	location.href="<%=request.getContextPath()%>/prod/prodList.do";
+	
+});
 
-
-
+</script>
 </body>
 </html>

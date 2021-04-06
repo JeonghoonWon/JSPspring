@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+
 import kr.or.ddit.prod.service.IProdService;
 import kr.or.ddit.prod.service.ProdServiceImpl;
 import kr.or.ddit.vo.ProdVO;
@@ -20,14 +22,18 @@ public class ProdViewServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String prod_id = req.getParameter("what");
-		if(prod_id ==null || prod_id.isEmpty()) {
+		if(StringUtils.isBlank(prod_id)) {
 			resp.sendError(400);
 			return;
 		}
 	ProdVO prod = service.retrieveProd(prod_id);
+	// 로직에서 받은것을 스코프 사용
 	req.setAttribute("prod", prod);
+	
+	// dispatcher 로 이동
 	String  view = "/WEB-INF/views/prod/prodView.jsp";
 	
+	// redirect if 문은 사용하지않지만 적용
 	boolean redirect = view.startsWith("redirect");
 	if(redirect) {
 		view = view.substring("redirect:".length());
@@ -37,6 +43,5 @@ public class ProdViewServlet extends HttpServlet {
 	}
 	
 	}
-	
-	
+		
 }
