@@ -17,6 +17,6 @@
 	 	</environment>
 	 </environments>
 	 <mappers>
-	 	
+	 		<mapper resource="kr/or/ddit/db/mybatis/mappers/Buyer.xml" />
 	 </mappers>
 </configuration>

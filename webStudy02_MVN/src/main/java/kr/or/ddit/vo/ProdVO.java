@@ -2,36 +2,49 @@ package kr.or.ddit.vo;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
+
 @Data
-@EqualsAndHashCode(of= {"prod_id"})
+@EqualsAndHashCode(of="prod_id")
 @ToString(of= {"prod_id", "prod_name", "prod_lgu"})
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ProdVO implements Serializable {
+	private int rnum;
 	private String prod_id;
 	private String prod_name;
 	private String prod_lgu;
 	private String lprod_nm;
 	private String prod_buyer;
-	private int prod_cost;
-	private int prod_price;
-	private int prod_sale;
+	private Integer prod_cost;
+	private Integer prod_price;
+	private Integer prod_sale;
 	private String prod_outline;
 	private String prod_detail;
 	private String prod_img;
-	private int prod_totalstock;
+	private Integer prod_totalstock;
 	private String prod_insdate;
-	private int prod_properstock;
+	private Integer prod_properstock;
 	private String prod_size;
 	private String prod_color;
 	private String prod_delivery;
 	private String prod_unit;
-	private int prod_qtyin;
-	private int prod_qtysale;
-	private int prod_mileage;
+	private Integer prod_qtyin;
+	private Integer prod_qtysale;
+	private Integer prod_mileage;
 	
-	private BuyerVO buyer;	// has a 관계 : 테이블이 1대1 관계
-	
-
+	private BuyerVO buyer; // has a(1:1) 관계	
 }
+
+
+
+
+
+
+

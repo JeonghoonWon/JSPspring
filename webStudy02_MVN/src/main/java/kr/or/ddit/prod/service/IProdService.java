@@ -7,20 +7,50 @@ import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.ProdVO;
 
 /**
- * 상품관리를 위한 Business Logic Layer
+ * 상품관리를 위한  Business Logic Layer
  *
  */
 public interface IProdService {
-	
 	/**
 	 * 상품 상세 조회
 	 * @param prod_id
-	 * @return 해당 상품이 존재하지 않는경우, RuntimeException발생
+	 * @return 해당 상품이 존재하지 않는 경우, CustomException 발생
 	 */
 	public ProdVO retrieveProd(String prod_id);
-	public List<ProdVO> retrieveProdList(PagingVO pagingVO);
-	public ServiceResult createProd(ProdVO prod);	//createProd 는 성공, 실패로 나뉘기 때문에 ServiceResult 
+	/**
+	 * 페이징 적용된 상품 목록 조회
+	 * @param pagingVO
+	 * @return
+	 */
+	public List<ProdVO> retrieveProdList(PagingVO<ProdVO> pagingVO);
+	/**
+	 * 페이징 적용된 상품 건수
+	 * @param pagingVO TODO
+	 * @return
+	 */
+	public int retrieveProdCount(PagingVO<ProdVO> pagingVO);
+	/**
+	 * 신규 상품 등록
+	 * @param prod
+	 * @return
+	 */
+	public ServiceResult createProd(ProdVO prod);
+	/**
+	 * 상품 수정
+	 * @param prod
+	 * @return 존재하지 않는 경우, CustomException 발생
+	 */
 	public ServiceResult modifyProd(ProdVO prod);
-	public int retrieveProdCount();
-	
 }
+
+
+
+
+
+
+
+
+
+
+
+

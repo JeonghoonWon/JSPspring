@@ -33,6 +33,13 @@ public class PagingVO<T> implements Serializable{
 	// T 자리에 어떤게 들어오냐에 따라 달라짐.
 	private SearchVO simpleSearch;
 	
+	// ProdVO 
+	// private ProdVO detailSearch;
+	 private T detailSearch;
+	 // ProdVO를 사용하면 다른곳에서 사용이 불가능하기때문에 
+	 // T 로 잡아서 재내릭타입	
+	 // 객체가 생성될때 
+	
 	public void setTotalRecord(int totalRecord) {
 		// 이게 호출된다면 외부에서 레코드 수를 호출한 것.
 		this.totalRecord = totalRecord;

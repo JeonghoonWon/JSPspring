@@ -1,13 +1,7 @@
-package kr.or.ddit.vo;
+package kr.or.ddit.buyer.vo;
 
-import java.io.Serializable;
+public class BuyerVO {
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-@Data
-@EqualsAndHashCode(of="buyer_id")
-public class BuyerVO implements Serializable{
 	private String buyer_id;
 	private String buyer_name;
 	private String buyer_lgu;
@@ -22,5 +16,5 @@ public class BuyerVO implements Serializable{
 	private String buyer_mail;
 	private String buyer_charger;
 	private String buyer_telext;
-
+	
 }

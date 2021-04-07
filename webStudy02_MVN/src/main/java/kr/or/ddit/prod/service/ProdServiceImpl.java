@@ -4,57 +4,56 @@ import java.util.List;
 
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.exception.CustomException;
-import kr.or.ddit.member.UserNotFoundException;
 import kr.or.ddit.prod.dao.IProdDAO;
 import kr.or.ddit.prod.dao.ProdDAOImpl;
-import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.ProdVO;
 
 public class ProdServiceImpl implements IProdService {
-	private IProdDAO dao = ProdDAOImpl.getInstance();
-	
-	// 싱글톤 
 	private static ProdServiceImpl self;
 	private ProdServiceImpl() {}
 	public static ProdServiceImpl getInstance() {
-		if(self == null) self = new ProdServiceImpl();
+		if(self==null) self = new ProdServiceImpl();
 		return self;
 	}
-	
+	private IProdDAO dao = ProdDAOImpl.getInstance();
 
 	@Override
 	public ProdVO retrieveProd(String prod_id) {
 		// 상품 하나의 정보 .가져오기 
-		ProdVO savedProd = dao.selectProd(prod_id);
-		if(savedProd==null) {
-			// custom exception 발생
-			throw new CustomException("해당 상품이 존재하지 않음.");	// unchecked execption
-		}
-		return savedProd;
+		ProdVO prod = dao.selectProd(prod_id);
+		if(prod==null)
+		// custom exception 발생
+			throw new CustomException(
+					String.format("%s 에 해당하는 상품이 없음.", prod_id)
+				);
+		return prod;
 	}
 	@Override
-	public List<ProdVO> retrieveProdList(PagingVO pagingVO) {
-		
+	public List<ProdVO> retrieveProdList(PagingVO<ProdVO> pagingVO) {
 		return dao.selectProdList(pagingVO);
 	}
 	@Override
+	public int retrieveProdCount(PagingVO<ProdVO> pagingVO) {
+		return dao.selectTotalRecord(pagingVO);
+	}
+	@Override
 	public ServiceResult createProd(ProdVO prod) {
-		// TODO Auto-generated method stub
-		return null;
+		int cnt = dao.insertProd(prod);
+		ServiceResult result = ServiceResult.FAIL;
+		if(cnt>0)
+			result = ServiceResult.OK;
+		return result;
 	}
 	@Override
 	public ServiceResult modifyProd(ProdVO prod) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
-	public int retrieveProdCount() {
-		return dao.selectTotalRecord();
-	}
 
-
-
-
-	
 }
+
+
+
+
+
