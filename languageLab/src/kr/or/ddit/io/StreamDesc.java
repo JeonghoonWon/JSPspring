@@ -12,6 +12,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
 
+import kr.or.ddit.annotation.FirstAnnotation;
+
 /**
  * 
  * 스트림 : 연속성을 가진 일련의 데이터의 흐름.
@@ -54,6 +56,8 @@ import java.net.URLConnection;
  *
  *
  */
+@FirstAnnotation(value ="stream", number = 3) // singlevalue annotation 에선 value ="" 에서 value생략 가능 
+
 public class StreamDesc {
 	
 	public static void main(String[] args) throws IOException{

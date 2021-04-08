@@ -17,19 +17,23 @@ import kr.or.ddit.enumpkg.MimeType;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.member.service.IMemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.mvc.annotation.Controller;
+import kr.or.ddit.mvc.annotation.RequestMapping;
+import kr.or.ddit.mvc.annotation.RequestMethod;
 
-@WebServlet("/member/idCheck.do")
-public class IdCheckServlet extends HttpServlet{
+//@WebServlet("/member/idCheck.do")
+@Controller
+public class IdCheckController{
 	private IMemberService service = new MemberServiceImpl();
 	
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		@RequestMapping(value ="/member/idCheck.do", method = RequestMethod.POST )
+		public String doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
-		
+		String view = null;
 		String mem_id = req.getParameter("id"); // 아이디 가져오기
 		if(mem_id==null||mem_id.isEmpty()) {		// 아이디 null check
 			resp.sendError(400);					// null or 빈 공간 : error 400
-			return;
+			return null;
 		}
 				
 		Map<String,Object> resultMap = new HashMap<>();
@@ -49,7 +53,7 @@ public class IdCheckServlet extends HttpServlet{
 			mapper.writeValue(out, resultMap);
 			
 		}
-		
-		
+		 
+		return view;
 	}
 }

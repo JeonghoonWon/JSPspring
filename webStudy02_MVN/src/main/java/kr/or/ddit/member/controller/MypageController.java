@@ -1,41 +1,44 @@
 package kr.or.ddit.member.controller;
 
 import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import kr.or.ddit.enumpkg.ServiceResult;
-import kr.or.ddit.member.UserNotFoundException;
 import kr.or.ddit.member.service.AuthenticateServiceImpl;
 import kr.or.ddit.member.service.IAuthenticateService;
 import kr.or.ddit.member.service.IMemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.mvc.annotation.Controller;
+import kr.or.ddit.mvc.annotation.RequestMapping;
+import kr.or.ddit.mvc.annotation.RequestMethod;
 import kr.or.ddit.vo.MemberVO;
 
-@WebServlet("/mypage.do")
-public class MypageServlet extends HttpServlet{
+//@WebServlet("/mypage.do")
+@Controller
+public class MypageController{
 	IMemberService service = new MemberServiceImpl();
 	IAuthenticateService authService = new AuthenticateServiceImpl();
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String view = "/WEB-INF/views/member/passwordForm.jsp";
-		req.getRequestDispatcher(view).forward(req, resp);
+	
+	@RequestMapping("/mypage.do")
+	public String checkPassword(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String view = "member/passwordForm";
+	//	req.getRequestDispatcher(view).forward(req, resp);
+		
+		return view;
 		
 
 		
 	}
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	@RequestMapping(value ="/mypage.do", method = RequestMethod.POST  )
+	public String showMyPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String mem_pass = req.getParameter("mem_pass");
 		if(mem_pass==null||mem_pass.isEmpty()) {
 			resp.sendError(400);
-			return;
+			return null;
 		}
 		HttpSession session = req.getSession();
 		MemberVO authMember = 
@@ -48,7 +51,8 @@ public class MypageServlet extends HttpServlet{
 			
 			MemberVO detailMember = service.retrieveMember(mem_id);
 			req.setAttribute("member", detailMember);
-			view = "/WEB-INF/views/member/mypage.jsp";
+//			view = "/WEB-INF/views/member/mypage.jsp";
+			view = "member/mypage";
 			
 		}else {
 			session.setAttribute("message", "비번 오류");
@@ -57,14 +61,7 @@ public class MypageServlet extends HttpServlet{
 			//인증은 Redirect 방식으로 가야함. 잘못된 정보를 forward로 보내면 안되기때문에
 		}
 		
-		boolean redirect = view.startsWith("redirect:");
-		if(redirect) {
-			view = view.substring("redirect:".length());
-			resp.sendRedirect(req.getContextPath() + view);
-		}else {
-		req.getRequestDispatcher(view).forward(req, resp);
-		
-		}
+		return view;
 		
 	}
 }

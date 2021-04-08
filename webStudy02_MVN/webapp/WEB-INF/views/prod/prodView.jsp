@@ -1,75 +1,140 @@
+<%@page import="kr.or.ddit.vo.BuyerVO"%>
 <%@page import="kr.or.ddit.vo.ProdVO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<jsp:include page="/includee/preScript.jsp" />
 </head>
 <body>
-<%
-	ProdVO prod =(ProdVO) request.getAttribute("prod");
-	
-%>
-<table border ="1">
-		<tr><th>상품코드</th><td><%=prod.getProd_id() %></td></tr>
-		<tr><th>상품명</th><td><%=prod.getProd_name() %></td></tr>
-		<tr><th>상품분류</th><td><%=prod.getProd_lgu() %></td></tr>
-		
-		
-	<tr>
-		<th>거래처 정보</th>
-		<td>
-			<table border ="1">
-				<thead>
-					<tr>
-						<th>거래처명</th>
-						<th>담당자명</th>
-						<th>연락처</th>
-						<th>주소1</th>
-					</tr>
-					<tr>
-						<td><%=prod.getBuyer().getBuyer_name() %></td>
-						<td><%=prod.getBuyer().getBuyer_charger() %></td>
-						<td><%=prod.getBuyer().getBuyer_comtel() %></td>
-						<td><%=prod.getBuyer().getBuyer_add1() %></td>
-					</tr>
-				</thead>
-			</table>
-		</td>
-	</tr>
-	
-		<tr><th>구매가</th><td><%=prod.getProd_cost() %></td></tr>
-		<tr><th>판매가</th><td><%=prod.getProd_price() %></td></tr>
-		<tr><th>할인가</th><td><%=prod.getProd_sale() %></td></tr>
-		<tr><th>상품설명요약</th><td><%=prod.getProd_outline() %></td></tr>
-		<tr><th>상품상세설명</th><td><%=prod.getProd_detail() %></td></tr>
-		<tr><th>사진</th><td><%=prod.getProd_img() %></td></tr>
-		<tr><th>총재고량</th><td><%=prod.getProd_totalstock() %></td></tr>
-		<tr><th>입고날짜</th><td><%=prod.getProd_insdate() %></td></tr>
-		<tr><th>입고전재고량</th><td><%=prod.getProd_properstock() %></td></tr>
-		<tr><th>상품크기</th><td><%=prod.getProd_size() %></td></tr>
-		<tr><th>상품색상</th><td><%=prod.getProd_color() %></td></tr>
-		<tr><th>배송방법</th><td><%=prod.getProd_delivery() %></td></tr>
-		<tr><th>수량</th><td><%=prod.getProd_unit() %></td></tr>
-		<tr><th>입고수량</th><td><%=prod.getProd_qtyin() %></td></tr>
-		<tr><th>할인수량</th><td><%=prod.getProd_qtysale() %></td></tr>
-		<tr><th>마일리지</th><td><%=prod.getProd_mileage() %></td></tr>
-		
+	<%
+		ProdVO prod = (ProdVO) request.getAttribute("prod");
+	%>
+	<table border = "1">
 		<tr>
-			<td colspan="2">
-					<button type = "button" id = "prodList">상품목록으로</button>
+			<th>상품코드</th>
+			<td><%=prod.getProd_id()%></td>
+		</tr>
+		<tr>
+			<th>상품명</th>
+			<td><%=prod.getProd_name()%></td>
+		</tr>
+		<tr>
+			<th>분류명</th>
+			<td><%=prod.getLprod_nm()%></td>
+		</tr>
+		<tr>
+			<th>거래처 정보</th>
+			<td>
+				<table>
+					<thead>
+						<tr>
+							<th>거래처명</th>
+							<th>담당자명</th>
+							<th>연락처</th>
+							<th>주소1</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<%
+								BuyerVO buyer = prod.getBuyer();
+							%>
+							<td><%=buyer.getBuyer_name() %></td>
+							<td><%=buyer.getBuyer_charger() %></td>
+							<td><%=buyer.getBuyer_comtel() %></td>
+							<td><%=buyer.getBuyer_add1() %></td>
+						</tr>
+					</tbody>
+				</table>
 			</td>
 		</tr>
-</table>
-<script type="text/javascript">
-$("#prodList").on("click",function(){
-	location.href="<%=request.getContextPath()%>/prod/prodList.do";
+		<tr>
+			<th>구매가</th>
+			<td><%=prod.getProd_cost()%></td>
+		</tr>
+		<tr>
+			<th>판매가</th>
+			<td><%=prod.getProd_price()%></td>
+		</tr>
+		<tr>
+			<th>세일가</th>
+			<td><%=prod.getProd_sale()%></td>
+		</tr>
+		<tr>
+			<th>상품정보</th>
+			<td><%=prod.getProd_outline()%></td>
+		</tr>
+		<tr>
+			<th>상세정보</th>
+			<td><%=prod.getProd_detail()%></td>
+		</tr>
+		<tr>
+			<th>이미지</th>
+			<td><%=prod.getProd_img()%></td>
+		</tr>
+		<tr>
+			<th>재고</th>
+			<td><%=prod.getProd_totalstock()%></td>
+		</tr>
+		<tr>
+			<th>입고일</th>
+			<td><%=prod.getProd_insdate()%></td>
+		</tr>
+		<tr>
+			<th>적정재고</th>
+			<td><%=prod.getProd_properstock()%></td>
+		</tr>
+		<tr>
+			<th>크기</th>
+			<td><%=prod.getProd_size()%></td>
+		</tr>
+		<tr>
+			<th>색상</th>
+			<td><%=prod.getProd_color()%></td>
+		</tr>
+		<tr>
+			<th>배송방법</th>
+			<td><%=prod.getProd_delivery()%></td>
+		</tr>
+		<tr>
+			<th>단위</th>
+			<td><%=prod.getProd_unit()%></td>
+		</tr>
+		<tr>
+			<th>입고량</th>
+			<td><%=prod.getProd_qtyin()%></td>
+		</tr>
+		<tr>
+			<th>판매량</th>
+			<td><%=prod.getProd_qtysale()%></td>
+		</tr>
+		<tr>
+			<th>마일리지</th>
+			<td><%=prod.getProd_mileage()%></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<button type="button" 
+				onclick="location.href='prodUpdate.do?what=<%=prod.getProd_id() %>';">수정</button>
+				<button type="button" 
+				onclick="location.href='prodList.do';">상품목록으로</button>
+			</td>
+		</tr>
+	</table>
 	
-});
-
-</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+

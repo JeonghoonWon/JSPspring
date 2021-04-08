@@ -14,21 +14,25 @@ import javax.servlet.http.HttpSession;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.member.service.IMemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.mvc.annotation.Controller;
+import kr.or.ddit.mvc.annotation.RequestMapping;
+import kr.or.ddit.mvc.annotation.RequestMethod;
 import kr.or.ddit.vo.MemberVO;
 
-@WebServlet("/member/memberDelete.do")
-public class MemberDeleteServlet extends HttpServlet{
+//@WebServlet("/member/memberDelete.do")
+@Controller
+public class MemberDeleteController{
 	private IMemberService service = new MemberServiceImpl();
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		@RequestMapping(value ="/member/memberDelete.do", method = RequestMethod.POST )
+		public String doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		req.setCharacterEncoding("UTF-8");
 		
 		String password = req.getParameter("password");
 		System.out.println(password);
 		if(password==null||password.isEmpty()) {		// password null check
 			resp.sendError(400);					// null or 빈 공간 : error 400
-			return;
+			return null;
 		}
 		
 		
@@ -55,15 +59,8 @@ public class MemberDeleteServlet extends HttpServlet{
 			break;
 		}
 		
-		boolean redirect = view.startsWith("redirect:");
-		if(redirect) {
-			view = view.substring("redirect:".length());
-			resp.sendRedirect(req.getContextPath() + view);
-		}else {
-		req.getRequestDispatcher(view).forward(req, resp);
-		
-		}
-		
+		return view;
 	}
-	
+		
+		
 }

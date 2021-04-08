@@ -17,27 +17,30 @@ import org.apache.commons.beanutils.BeanUtils;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.member.service.IMemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.mvc.annotation.Controller;
+import kr.or.ddit.mvc.annotation.RequestMapping;
+import kr.or.ddit.mvc.annotation.RequestMethod;
 import kr.or.ddit.vo.MemberVO;
 
-@WebServlet("/member/memberInsert.do")
-public class MemberInsertServlet extends HttpServlet {
+// @WebServlet("/member/memberInsert.do") 
+// @WebServlet("/member/memberInsert.do") 
+// Marker annotation 이면서 SingleValue annotation
+// front 뒤에서 동작하는 commend controller 가 되어야 함.
+
+@Controller
+public class MemberInsertController {
 	private IMemberService service = new MemberServiceImpl();
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	@RequestMapping("/member/memberInsert.do") 
+	public String form(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		String view = "/WEB-INF/views/member/memberForm.jsp";
-		boolean redirect = false;
-		// logic
-		if (redirect) {
-			resp.sendRedirect(req.getContextPath() + view);
-		} else {
-			req.getRequestDispatcher(view).forward(req, resp);
-		}
+		String view = "member/memberForm";	// "member/memberForm"; : 논리적인 뷰네임
+		return view;
 	}
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setCharacterEncoding("UTF-8");
+	
+	@RequestMapping(value = "/member/memberInsert.do", method = RequestMethod.POST) 
+	public String process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
 		
 //		1. 요청 접수
 		MemberVO member = new MemberVO();
@@ -60,32 +63,26 @@ public class MemberInsertServlet extends HttpServlet {
 
 			switch (result) {
 			case PKDUPLICATED:
-				view = "/WEB-INF/views/member/memberForm.jsp";
+				view = "member/memberForm";
 				message = "아이디 중복";
 				break;
 			case OK:
 				view = "redirect:/login/loginForm.jsp";
+				
 				break;
 			default:
-				view = "/WEB-INF/views/member/memberForm.jsp";
+				view = "member/memberForm";
 				message = "서버오류 잠시 뒤 다시 시도하세요.";
 				break;
 			}
 		} else {
 			// 검증 불통
-			view = "/WEB-INF/views/member/memberForm.jsp";
+			view = "member/memberForm";
 		}
 
 		req.setAttribute("message", message);
 
-		boolean redirect = view.startsWith("redirect:");
-		if(redirect) {
-			view = view.substring("redirect:".length());
-			resp.sendRedirect(req.getContextPath() + view);
-		}else {
-		req.getRequestDispatcher(view).forward(req, resp);
-		
-		}
+		return view;
 	}
 
 	private boolean validate(MemberVO member, Map<String, String> errors) {

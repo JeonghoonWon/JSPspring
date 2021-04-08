@@ -9,6 +9,11 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+.error {
+	color: red;
+}
+</style>
 <jsp:include page="/includee/preScript.jsp" />
 <%
 	String message = (String) request.getAttribute("message");
@@ -22,11 +27,14 @@
 %>
 </head>
 <body>
+
+
+
 <jsp:useBean id="prod" class="kr.or.ddit.vo.ProdVO" scope="request" />
 <jsp:useBean id="errors" class="java.util.LinkedHashMap" scope="request" />
-<form method="post">	
+<form method="post" id = "prodForm">	
+	<input type ="hidden" name = "prod_id" value="<%=prod.getProd_id() %>" />
 	<table>
-		
 		<tr>
 			<th>상품명</th>
 			<td><input type="text" name="prod_name" required
@@ -178,7 +186,7 @@
 	</table>
 </form>	
 	<script type="text/javascript">
-		let prod_buyerTag =	$("[name='prod_buyer']");
+		let prod_buyerTag =	$("[name='prod_buyer']").val("<%=prod.getProd_buyer() %>");
 		$("[name='prod_lgu']").on("change", function(){
 			let selectedLgu = $(this).val();
 			if(selectedLgu){
@@ -188,7 +196,7 @@
 				prod_buyerTag.find("option").show();
 			}
 			prod_buyerTag.find("option:first").show();
-		});
+		}).val("<%=prod.getProd_lgu() %>");
 	</script>
 </body>
 </html>

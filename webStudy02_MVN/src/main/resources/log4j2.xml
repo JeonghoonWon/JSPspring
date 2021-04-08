@@ -17,6 +17,7 @@ root level : debug 이상으로 등록된 message를 모두 남기겠다. -->
     </Console>
   </Appenders>
   <Loggers>
+  <!-- 적어도 info 보단 낮은 등급으로 되어있어야 출력이 된다.  -->
  <Logger name="kr.or.ddit" level="info" additivity="false">
       <AppenderRef ref="Console"/>
     </Logger>
