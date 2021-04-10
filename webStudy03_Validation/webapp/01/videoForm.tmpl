@@ -1,0 +1,77 @@
+<html>
+
+<style>
+	#videoArea { width: 100%; height: 500px; overflow: hidden;
+				margin: 0px auto; position: relative; 
+				border : 1px solid black;
+				}
+
+	video {
+			width : 100%;
+			}
+</style>
+<head>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript">
+//	$(document).on("ready",function(){
+		
+//	});
+	
+	$(function(){
+		const SRCPTRN = "%A?%N=%V";
+ 			console.log($("form")[0]);
+ 			const action = $("form")[0].action;
+		
+
+		$("#video").on("change",function(event){
+			$("#videoArea").empty();
+			
+			//select 와 callback 함수
+/* 			console.log(this.value); // this = select teg / html 형식이기 때문에 value로 값을 가져와야한다.
+			console.log($(this).val());
+		this.form.submit();
+		 */				
+ 			// img 태그 생성
+		 	var name = this.name; // $(this).attr("name")
+		 	var values = $(this).val(); //$(this).val()
+		 	var videos = [];
+		 	$(values).each(function(idx,value){
+ 				var src = SRCPTRN.replace("%A", action)
+ 							 	 .replace("%N", name)
+ 							 	 .replace("%V", value);
+ 				var video = $("<video>").attr("src",src).attr("autoplay","autoplay");
+ 				videos.push(video);
+		 	});
+		 	console.log(values)
+		 	
+ 			// imageArea에 img 태그를 innerHTML 로 삽입
+ 	
+ 			$("#videoArea").append(videos); 
+ 			
+		});	
+				
+	});
+	</script>
+</head>
+<body>
+
+<h4>%today%</h4>
+<form action = 'video.do'>
+<select name = "video" id="video" multiple>
+%options%
+</select>
+<input type="submit" value ="전송" style="background-color: red;"/>
+</form>
+<div id="videoArea">
+<video autoplay>
+</video>
+</div>
+<script type="text/javascript">
+/* 	var select = document.querySelector("#image")
+	select.onchange = function(event){
+		event.target.form.submit();
+	} */
+</script>
+
+</body>
+</html>

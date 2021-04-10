@@ -18,6 +18,7 @@ import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.mvc.annotation.Controller;
 import kr.or.ddit.mvc.annotation.RequestMapping;
 import kr.or.ddit.mvc.annotation.RequestMethod;
+import kr.or.ddit.mvc.annotation.resolvers.ModelAttribute;
 import kr.or.ddit.prod.dao.IOthersDAO;
 import kr.or.ddit.prod.dao.OthersDAOImpl;
 import kr.or.ddit.prod.service.IProdService;
@@ -42,35 +43,37 @@ public class ProdInsertController {
 	}
 
 	@RequestMapping("/prod/prodInsert.do")
-	public String doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public String doGet(HttpServletRequest req) {
 		addAttribute(req);
 		
-		String view = "prod/prodForm";
+		return "prod/prodForm";
 		
-		return view;
+
 	}
 	
 
 	@RequestMapping(value ="/prod/prodInsert.do", method = RequestMethod.POST )
-	public String InsertProd(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public String process(
+			@ModelAttribute("prod") ProdVO prod
+			, HttpServletRequest req){
 //		ProdVO prod;
 //		
 //		createProd(prod);
 //		prod.getProd_id();
 //		등록 성공시 : /prodView.do 로 이동
-		req.setCharacterEncoding("UTF-8");
+//		req.setCharacterEncoding("UTF-8");
 
 		// 1. 요청 접수
-		ProdVO prod = new ProdVO();
+
 		// 입력값 중 한두개 틀렸을 경우 prodForm 으로 다시 가야하므로 기존 입력값도 가져가야한다.
 		// 그때 req.setAttribute("prod", prod) 사용
-		req.setAttribute("prod", prod);
-		try {
-			// 한꺼번에 바인딩 하기 위해 beanUtils
-			BeanUtils.populate(prod, req.getParameterMap());
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
+//		req.setAttribute("prod", prod);
+//		try {
+//			// 한꺼번에 바인딩 하기 위해 beanUtils
+//			BeanUtils.populate(prod, req.getParameterMap());
+//		} catch (IllegalAccessException | InvocationTargetException e) {
+//			throw new RuntimeException(e);
+//		}
 		// 2. 검증
 		// Map<String : 어떤게 통과 못했는지 , String : 검증 결과 메시지> 
 		Map<String, String> errors = new LinkedHashMap<>();

@@ -1,5 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.buyer.dao.IBuyerDAO">
+	
+	<resultMap type="BuyerVO" id="buyerMap" 
+				autoMapping="true">
+			<id property="buyer_id" column="BUYER_ID"/>
+		<association property="prod" javaType="ProdVO" 
+				autoMapping="true">
+			<id property="prod_id" column="PROD_ID"/>
+		</association>
+	</resultMap>
+	
+	<sql id="searchFrag">
+		<trim prefix=" WHERE " prefixOverrides="AND">
+		<!-- 		<trim prefix="WHERE" trim 사용하는 곳에 WHERE 넣어준다.  prefixOverrides="AND" : AND 를 넣었는데 조건에 충족하지않으면 지워주는것>  -->
+			<if test="detailSearch neq null">
+				<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailSearch.buyer_lgu)">
+				AND	BUYER_LGU = #{detailSearch.buyer_lgu}
+				</if>
+				<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailSearch.lprod_nm)">
+				AND	LPROD_NM = #{detailSearch.lprod_nm}
+		
+				</if>
+			</if>
+		</trim>
+	</sql>
+	
+	<select id="selectTotalRecord" resultType="int" parameterType="PagingVO">
+		SELECT COUNT(*)
+		FROM BUYER INNER JOIN LPROD ON (BUYER_LGU = LPROD_GU)
+		<!--동적으로 생성시 where 사용했지만 다른 방법 사용 -->		
+	</select>
+	
+	
+	
+	<select id = "selectBuyerList" parameterType="PagingVO"
+			resultType="BuyerVO" >
+	       SELECT B.*
+			FROM (
+				SELECT A.*, ROWNUM RNUM
+				FROM (
+					SELECT
+						  BUYER_ID, BUYER_NAME, BUYER_LGU,
+	                      BUYER_BANK, BUYER_BANKNO, BUYER_BANKNAME,
+	                      BUYER_ZIP, BUYER_ADD1, BUYER_ADD2, 
+	                      BUYER_COMTEL, BUYER_FAX, BUYER_MAIL,
+	                      BUYER_CHARGER, BUYER_TELEXT, 
+	                      LPROD_NM
+						
+						  FROM BUYER INNER JOIN LPROD ON (BUYER_LGU = LPROD_GU)
+                          
+				ORDER BY BUYER_ID ASC
+			)A	 
+		)B	
+		WHERE RNUM BETWEEN #{startRow} AND #{endRow} 
+	</select>
+	
+
+	
 
 </mapper>
+
+
+
