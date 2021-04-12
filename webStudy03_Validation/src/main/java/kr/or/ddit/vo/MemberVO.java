@@ -90,5 +90,7 @@ public class MemberVO implements Serializable {
 	private String mem_delete;
 
 	private Set<ProdVO> prodList; // has many(1:N) 관계 생성
+	
+	private String mem_role;
 
 }

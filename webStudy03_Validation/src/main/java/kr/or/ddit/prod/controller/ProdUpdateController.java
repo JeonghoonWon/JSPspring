@@ -40,6 +40,7 @@ public class ProdUpdateController {
 	}
 
 	@RequestMapping("/prod/prodUpdate.do")
+	// 상품을 아무나 등록해선 안되기때문에 보호 할 자원
 	public String updateForm(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String prod_id = req.getParameter("what");
 		if (StringUtils.isBlank(prod_id)) {

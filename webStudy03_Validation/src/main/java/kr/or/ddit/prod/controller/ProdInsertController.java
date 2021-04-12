@@ -45,6 +45,7 @@ public class ProdInsertController {
 	}
 
 	@RequestMapping("/prod/prodInsert.do")
+	// 상품을 아무나 등록해선 안되기때문에 보호 할 자원
 	public String doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		addAttribute(req);
 		

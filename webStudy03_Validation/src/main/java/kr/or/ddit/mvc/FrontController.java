@@ -38,7 +38,7 @@ public class FrontController extends HttpServlet {
 	
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setCharacterEncoding("UTF-8");
+		//req.setCharacterEncoding("UTF-8"); frontController 에서 수행하던  encoding 을 filter 에서 진행하게끔 처리해보자
 		
 		RequestMappingInfo mappingInfo 
 	   		= handlerMapping.findCommandHandler(req); 

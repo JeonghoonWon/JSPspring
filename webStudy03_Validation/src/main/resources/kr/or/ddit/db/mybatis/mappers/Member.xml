@@ -3,7 +3,9 @@
 <mapper namespace="kr.or.ddit.member.dao.IMemberDAO">
 
 	<select id="selectMemberForAuth" parameterType="string" resultType="MemberVO">
-		SELECT MEM_ID, MEM_PASS, MEM_NAME, MEM_MAIL   
+		SELECT MEM_ID, MEM_PASS, MEM_NAME
+				, MEM_MAIL
+				, MEM_ROLE   
 		FROM MEMBER                                   
 		WHERE MEM_ID = #{mem_id}  AND MEM_DELETE IS NULL 
 	</select>
@@ -48,6 +50,7 @@
 		     MEM_MEMORIAL,                                              
 		     TO_CHAR(MEM_MEMORIALDAY, 'YYYY-MM-DD') MEM_MEMORIALDAY,    
 		     MEM_MILEAGE, MEM_DELETE
+		     , MEM_ROLE
 		     , PROD_ID, PROD_NAME
 		     , PROD_COST, PROD_PRICE, PROD_MILEAGE
 		     , LPROD_NM
@@ -85,14 +88,16 @@
 			     MEM_ZIP,    MEM_ADD1,    MEM_ADD2,                
 			     MEM_HOMETEL,    MEM_COMTEL,    MEM_HP,            
 			     MEM_MAIL,    MEM_JOB,    MEM_LIKE,                
-			     MEM_MEMORIAL,    MEM_MEMORIALDAY,    MEM_MILEAGE  
+			     MEM_MEMORIAL,    MEM_MEMORIALDAY,    MEM_MILEAGE
+			     , MEM_ROLE  
 			 ) VALUES (                                            
 			 		#{mem_id,jdbcType=VARCHAR}, #{mem_pass,jdbcType=VARCHAR}, #{mem_name,jdbcType=VARCHAR},                                 
 			 	    #{mem_regno1,jdbcType=VARCHAR}, #{mem_regno2,jdbcType=VARCHAR}, TO_DATE(#{mem_bir,jdbcType=DATE}, 'YYYY-MM-DD'),           
 			 	    #{mem_zip,jdbcType=VARCHAR}, #{mem_add1,jdbcType=VARCHAR}, #{mem_add2,jdbcType=VARCHAR},                                 
 			 	    #{mem_hometel,jdbcType=VARCHAR}, #{mem_comtel,jdbcType=VARCHAR}, #{mem_hp,jdbcType=VARCHAR},                                 
 			 	    #{mem_mail,jdbcType=VARCHAR},  #{mem_job,jdbcType=VARCHAR},  #{mem_like,jdbcType=VARCHAR},                                 
-			 	    #{mem_memorial,jdbcType=VARCHAR}, TO_DATE(#{mem_memorialday,jdbcType=DATE} , 'YYYY-MM-DD'), 3000        
+			 	    #{mem_memorial,jdbcType=VARCHAR}, TO_DATE(#{mem_memorialday,jdbcType=DATE} , 'YYYY-MM-DD'), 3000  
+			 	    , 'ROLE_USER'      
 			 )													
 	
 	</insert>
