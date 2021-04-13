@@ -5,7 +5,8 @@
 	<select id="selectMemberForAuth" parameterType="string" resultType="MemberVO">
 		SELECT MEM_ID, MEM_PASS, MEM_NAME
 				, MEM_MAIL
-				, MEM_ROLE   
+				, MEM_ROLE
+				, MEM_IMG   
 		FROM MEMBER                                   
 		WHERE MEM_ID = #{mem_id}  AND MEM_DELETE IS NULL 
 	</select>
@@ -51,6 +52,7 @@
 		     TO_CHAR(MEM_MEMORIALDAY, 'YYYY-MM-DD') MEM_MEMORIALDAY,    
 		     MEM_MILEAGE, MEM_DELETE
 		     , MEM_ROLE
+		     , MEM_IMG
 		     , PROD_ID, PROD_NAME
 		     , PROD_COST, PROD_PRICE, PROD_MILEAGE
 		     , LPROD_NM
@@ -77,6 +79,10 @@
 		        MEM_LIKE	=	#{mem_like,jdbcType=VARCHAR},         
 		        MEM_MEMORIAL	=	#{mem_memorial,jdbcType=VARCHAR},     
 		        MEM_MEMORIALDAY	=	TO_DATE(#{mem_memorialday,jdbcType=DATE} , 'YYYY-MM-DD')            
+				<if test="mem_img!=null">
+				, MEM_IMG = #{mem_img,jdbcType=BLOB}
+				</if>
+			
 			WHERE   MEM_ID		=	#{mem_id,jdbcType=VARCHAR}        
 	</update>
 	
@@ -90,6 +96,7 @@
 			     MEM_MAIL,    MEM_JOB,    MEM_LIKE,                
 			     MEM_MEMORIAL,    MEM_MEMORIALDAY,    MEM_MILEAGE
 			     , MEM_ROLE  
+			     , MEM_IMG
 			 ) VALUES (                                            
 			 		#{mem_id,jdbcType=VARCHAR}, #{mem_pass,jdbcType=VARCHAR}, #{mem_name,jdbcType=VARCHAR},                                 
 			 	    #{mem_regno1,jdbcType=VARCHAR}, #{mem_regno2,jdbcType=VARCHAR}, TO_DATE(#{mem_bir,jdbcType=DATE}, 'YYYY-MM-DD'),           
@@ -97,7 +104,8 @@
 			 	    #{mem_hometel,jdbcType=VARCHAR}, #{mem_comtel,jdbcType=VARCHAR}, #{mem_hp,jdbcType=VARCHAR},                                 
 			 	    #{mem_mail,jdbcType=VARCHAR},  #{mem_job,jdbcType=VARCHAR},  #{mem_like,jdbcType=VARCHAR},                                 
 			 	    #{mem_memorial,jdbcType=VARCHAR}, TO_DATE(#{mem_memorialday,jdbcType=DATE} , 'YYYY-MM-DD'), 3000  
-			 	    , 'ROLE_USER'      
+			 	    , 'ROLE_USER'
+			 	    , #{mem_img,jdbcType=BLOB}      
 			 )													
 	
 	</insert>

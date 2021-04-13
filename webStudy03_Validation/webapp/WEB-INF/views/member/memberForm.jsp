@@ -43,7 +43,7 @@
 		scope="request" />
 
 
-	<form method="post" id="memberForm" >
+	<form method="post" id="memberForm" enctype="multipart/form-data">
 
 		<table>
 			
@@ -73,6 +73,13 @@
 				<td><input type="text" name="mem_name" 
 					value="<%=member.getMem_name()%>" /><span class="error"><%=errors.get("mem_name")%></span></td>
 			</tr>
+			
+			<tr>
+				<th>프로필</th>
+				<td>
+					<input type ="file" name ="mem_image" accept="image/" />
+				</td>
+			
 			<tr>
 				<th>주민번호1</th>
 				<td><input type="text" name="mem_regno1"

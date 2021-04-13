@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<form method="post" enctype="multipart/form-data">
+
 	<!-- 파일이 업로드 되는 UI에서 반드시 맞춰줘야 하는것 두가지
 	전송되는 영역이 경우에 따라 request line, request body
 	파일이 업로드될때 request line 을 통해 불가능 
@@ -41,8 +41,12 @@
 		3.0 이상 에선 Part API 사용 가능. 
 		
 	  -->
+	  <form method="post" enctype="multipart/form-data">
+	  <!--part는 input 의 갯수에 따라 달라진다.  -->
 		<input type = "text" name = "uploader" placeholder="업로더" />
 		<input type = "file" name = "uploadFile1" accept="image/*"/> <!-- accept="image/* : 이미지만 입력 받을 수 있게 제한을 걸어둔다. -->
+		<input type = "file" name = "uploadFile1" accept="image/*"/>
+		<input type = "file" name = "uploadFile2" accept="image/*"/>
 		<input type = "file" name = "uploadFile2" accept="image/*"/>
 		<button type = "submit">업로드</button>
 	</form> 

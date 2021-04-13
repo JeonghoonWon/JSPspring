@@ -21,6 +21,10 @@ import kr.or.ddit.member.service.MemberServiceImpl;
 import kr.or.ddit.mvc.annotation.Controller;
 import kr.or.ddit.mvc.annotation.RequestMapping;
 import kr.or.ddit.mvc.annotation.RequestMethod;
+import kr.or.ddit.mvc.annotation.resolvers.BadRequestException;
+import kr.or.ddit.mvc.annotation.resolvers.ModelAttribute;
+import kr.or.ddit.mvc.annotation.resolvers.RequestPart;
+import kr.or.ddit.mvc.filter.wrapper.MultipartFile;
 import kr.or.ddit.validator.CommonValidator;
 import kr.or.ddit.validator.UpdateGroup;
 import kr.or.ddit.vo.MemberVO;
@@ -51,24 +55,39 @@ public class MemberUpdateController{
 		}
 	
 		@RequestMapping(value ="/member/memberUpdate.do", method = RequestMethod.POST )
-		public String doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		public String doPost(@ModelAttribute("member") MemberVO member
+				, @RequestPart(value="mem_image", required=false) MultipartFile mem_image
+				, HttpSession session
+				,HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		addCommandAttribute(req);
 		
 		req.setCharacterEncoding("UTF-8");
 		
 //		1. 요청 접수
-		MemberVO member = new MemberVO();
-		HttpSession session =  req.getSession();
+//		MemberVO member = new MemberVO();
+//		HttpSession session =  req.getSession();
 		MemberVO authMember =(MemberVO) session.getAttribute("authMember");
 		String authId = authMember.getMem_id();
 		member.setMem_id(authId);
-		req.setAttribute("member", member);
+//		req.setAttribute("member", member);
 //		member.setMem_id(req.getParameter("mem_id"));
-		try {
-			BeanUtils.populate(member,req.getParameterMap());
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);				
+//		try {
+//			BeanUtils.populate(member,req.getParameterMap());
+//		} catch (IllegalAccessException | InvocationTargetException e) {
+//			throw new RuntimeException(e);				
+//		}
+		
+		if(mem_image!=null && !mem_image.isEmpty()) {
+			// mem_image 가 있는 경우, 바이트르 꺼내온다.
+			// 바이트로 변환 하기전 이 파일이 진짜 이미지인지 확인해야한다.
+			String mime = mem_image.getContentType();
+			if(!mime.startsWith("image/")) {
+				throw new BadRequestException("이미지 이외의 프로필은 처리 불가.");
+			}
+			byte[] mem_img = mem_image.getBytes();
+			member.setMem_img(mem_img);
 		}
+		
 //		2. 검증
 		Map<String, List<String>> errors = new LinkedHashMap<>();
 		req.setAttribute("errors", errors);

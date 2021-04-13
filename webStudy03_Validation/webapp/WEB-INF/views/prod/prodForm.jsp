@@ -32,7 +32,7 @@
 
 <jsp:useBean id="prod" class="kr.or.ddit.vo.ProdVO" scope="request" />
 <jsp:useBean id="errors" class="java.util.LinkedHashMap" scope="request" />
-<form method="post" id = "prodForm">	
+<form method="post" enctype="multipart/form-data">	
 	<input type ="hidden" name = "prod_id" value="<%=prod.getProd_id() %>" />
 	<table>
 		<tr>
@@ -107,14 +107,16 @@
 		</tr>
 		<tr>
 			<th>상세정보</th>
-			<td><input type="text" name="prod_detail"
+			<td>
+	
+				<input type="text" name="prod_detail"
 				value="<%=prod.getProd_detail()%>" />
 				<span class="error"><%=errors.get("prod_detail")%></span></td>
 		</tr>
 		<tr>
 			<th>이미지</th>
-			<td><input type="text" name="prod_img" required
-				value="<%=prod.getProd_img()%>" />
+			<td>
+				<input type ="file" name ="prod_image" />
 				<span class="error"><%=errors.get("prod_img")%></span></td>
 		</tr>
 		<tr>

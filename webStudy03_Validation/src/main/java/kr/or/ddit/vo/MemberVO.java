@@ -1,6 +1,7 @@
 package kr.or.ddit.vo;
 
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.Set;
 
 import javax.validation.constraints.Email;
@@ -16,7 +17,9 @@ import kr.or.ddit.validator.UpdateGroup;
 import kr.or.ddit.validator.constraint.TelephoneNumber;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * 회원 관리를 위한 Domain Layer (Java Bean 규약)
@@ -34,8 +37,8 @@ import lombok.NoArgsConstructor;
 // 필요한 getter/setter/equals /tostring 있을때 annotation 사용
 //@Getter
 //@Setter
-//@EqualsAndHashCode(of= {"mem_id","mem_regno1","mem_regno2"}) // id가 같으면 이란 조건 생성
-//@ToString(exclude= {"mem_pass","mem_regno1","mem_regno2"}) //exclude : 제외하고 표시
+@EqualsAndHashCode(of= {"mem_id","mem_regno1","mem_regno2"}) // id가 같으면 이란 조건 생성
+@ToString(exclude= {"mem_pass","mem_regno1","mem_regno2", "mem_img"}) //exclude : 제외하고 표시
 @Data // java bean 규약 에 맞는 getter/setter/equals/tostring 불러올 수 있음.
 @NoArgsConstructor // 기본 생성자 자동생성
 @AllArgsConstructor // 가지고있는 생성자 모두 불러올때
@@ -92,5 +95,17 @@ public class MemberVO implements Serializable {
 	private Set<ProdVO> prodList; // has many(1:N) 관계 생성
 	
 	private String mem_role;
+	
+	// byte 는 직렬화를 할 수 없기 때문에 직렬화를 스킵 시킨다. (transient)
+	//transient - 직렬화 시 스킵된다. 더 정확한 의미론 메모리 안에서만 사용되어야 함을 뜻하는 키워드다.
+	private transient byte[] mem_img;
+	
+	public String getBase64Image() {
+		// 프로필 이미지가 있는경우 바이트를 Base64를 통해 문자열로 변경해준다.
+		String encoded =null;
+		if(mem_img!=null)
+		encoded = Base64.getEncoder().encodeToString(mem_img);
+		return encoded;
+	}
 
 }

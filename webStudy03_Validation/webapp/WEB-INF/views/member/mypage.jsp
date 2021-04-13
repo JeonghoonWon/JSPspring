@@ -21,10 +21,15 @@
 			<th>회원아이디</th>
 			<td><%=member.getMem_id()%></td>
 		</tr>
+		
 		<tr>
-			<th>회원비밀번호</th>
-			<td><%=member.getMem_pass()%></td>
+			<th>프로필</th>
+			<td>
+				<img src="data:image/*;base64,<%=member.getBase64Image()%>">
+			</td>
 		</tr>
+		
+		
 		<tr>
 			<th>회원이름</th>
 			<td><%=member.getMem_name()%></td>

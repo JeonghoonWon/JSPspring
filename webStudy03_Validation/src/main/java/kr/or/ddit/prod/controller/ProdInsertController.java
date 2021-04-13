@@ -1,24 +1,22 @@
 package kr.or.ddit.prod.controller;
 
+import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.beanutils.BeanUtils;
 
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.mvc.annotation.Controller;
 import kr.or.ddit.mvc.annotation.RequestMapping;
 import kr.or.ddit.mvc.annotation.RequestMethod;
 import kr.or.ddit.mvc.annotation.resolvers.ModelAttribute;
+import kr.or.ddit.mvc.annotation.resolvers.RequestPart;
+import kr.or.ddit.mvc.filter.wrapper.MultipartFile;
 import kr.or.ddit.prod.dao.IOthersDAO;
 import kr.or.ddit.prod.dao.OthersDAOImpl;
 import kr.or.ddit.prod.service.IProdService;
@@ -58,14 +56,25 @@ public class ProdInsertController {
 	@RequestMapping(value ="/prod/prodInsert.do", method = RequestMethod.POST )
 	public String process(
 			@ModelAttribute("prod") ProdVO prod
-			, HttpServletRequest req) {
-
-
-
+			, @RequestPart("prod_image") MultipartFile prod_image
+			, HttpServletRequest req) throws IOException {
+		addAttribute(req);
 		// Map<String : 어떤게 통과 못했는지 , String : 검증 결과 메시지> 
 		Map<String, List<String>> errors = new LinkedHashMap<>();
 		req.setAttribute("errors", errors);
 		// 검증의 대상 : prod 
+		
+		String saveFolderUrl = "/prodImages";
+		File saveFolder = new File(req.getServletContext().getRealPath(saveFolderUrl));
+		if(!prod_image.isEmpty()) {
+			prod_image.saveTO(saveFolder);
+			prod.setProd_img(prod_image.getUniqueSaveName());
+			// 사진 저장 
+			
+			// 이름 값 꺼내와서 
+			
+			// 
+		}
 		
 		boolean valid = new CommonValidator<ProdVO>().validate(prod, errors, InsertGroup.class);
 		String view = null;
