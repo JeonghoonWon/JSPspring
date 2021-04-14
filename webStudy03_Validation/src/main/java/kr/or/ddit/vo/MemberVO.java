@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Base64;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -11,6 +14,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Length;
 
+import kr.or.ddit.Constants;
 import kr.or.ddit.validator.DeleteGroup;
 import kr.or.ddit.validator.InsertGroup;
 import kr.or.ddit.validator.UpdateGroup;
@@ -42,7 +46,7 @@ import lombok.ToString;
 @Data // java bean 규약 에 맞는 getter/setter/equals/tostring 불러올 수 있음.
 @NoArgsConstructor // 기본 생성자 자동생성
 @AllArgsConstructor // 가지고있는 생성자 모두 불러올때
-public class MemberVO implements Serializable {
+public class MemberVO implements Serializable, HttpSessionBindingListener {
 //	public MemberVO() {
 //		super();
 //	}
@@ -108,4 +112,31 @@ public class MemberVO implements Serializable {
 		return encoded;
 	}
 
+	@Override
+	public void valueBound(HttpSessionBindingEvent event) {
+		// CustomHttpSessionAttributeListener 에서 가져온거 그대로 사용 가능.
+		if("authMember".equals(event.getName())) {
+			// 현재 로그인된 사람의 정보를 가져온다.
+			
+			ServletContext application = event.getSession().getServletContext();
+			Set<MemberVO> userList = (Set) application.getAttribute(Constants.USERLISTATTRNAME);
+			userList.add(this);
+		}
+		
+	}
+
+	@Override
+	public void valueUnbound(HttpSessionBindingEvent event) {
+		// CustomHttpSessionAttributeListener 에서 가져온거 그대로 사용 가능.
+		if("authMember".equals(event.getName())) {
+			// 현재 로그인된 사람의 정보를 가져온다.
+			ServletContext application = event.getSession().getServletContext();
+			Set<MemberVO> userList = (Set) application.getAttribute(Constants.USERLISTATTRNAME);
+			userList.remove(this);
+		}
+		
+	}
+		public String getTest() {
+			return "테스트";
+		}
 }

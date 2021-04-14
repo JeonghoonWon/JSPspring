@@ -5,29 +5,47 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URLDecoder;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/02/imageForm.do")
-public class Model2ImageFormServlet extends HttpServlet {
-	private ServletContext application;
+import kr.or.ddit.mvc.annotation.Controller;
+import kr.or.ddit.mvc.annotation.RequestMapping;
+import kr.or.ddit.mvc.annotation.RequestMethod;
+import kr.or.ddit.mvc.annotation.resolvers.BadRequestException;
+import kr.or.ddit.mvc.annotation.resolvers.RequestPart;
+import kr.or.ddit.mvc.filter.wrapper.MultipartFile;
 
-	@Override
-	public void init(ServletConfig config) throws ServletException {
-		// TODO Auto-generated method stub
-		super.init(config);
-		application = config.getServletContext();
+//@WebServlet("/02/imageForm.do")
+@Controller
+public class Model2ImageFormServlet {
+	private ServletContext application;
+	
+	@RequestMapping(value = "/02/imageForm.do", method=RequestMethod.POST)
+	public String upload(@RequestPart("uploadImage") MultipartFile image 
+			) throws IOException {
+		if(!image.isEmpty()) {
+			String folder = application.getInitParameter("contentFolder");
+			File contents = new File(folder);
+			String contentType = application.getMimeType(image.getOriginalFilename());
+			// 이미지 여부를 어떻게 알까? - 확장자
+			if(contentType==null || !contentType.startsWith("image/")) {
+				throw new BadRequestException("이미지만 업로드 하세요.");
+			}
+			image.transferTo(new File(contents,image.getOriginalFilename())); // upload 작업 종료
+		}
+		//post-redirect-pattern (P-R-G pattern)
+		return "redirect:/02/imageForm.do";
 	}
 	
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String folder = "d:/contents";
+	@RequestMapping("/02/imageForm.do")
+	public String doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		if(application==null)
+			application = req.getServletContext();
+				
+		String folder = application.getInitParameter("contentFolder");
 		File contents = new File(folder);
 		String[] children = contents.list(new FilenameFilter() {
 		
@@ -57,8 +75,8 @@ public class Model2ImageFormServlet extends HttpServlet {
 		
 		
 		req.setAttribute("children", children);
-		String view = "/WEB-INF/views/imageForm.jsp";
-		req.getRequestDispatcher(view).forward(req, resp);
+		String view = "imageForm";
+		return view;
 	
 	}
 

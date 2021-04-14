@@ -30,6 +30,8 @@ public class MemberServiceImpl implements IMemberService {
 	public ServiceResult createMember(MemberVO member) {
 		ServiceResult result = null;
 		if(dao.selectMemberDetail(member.getMem_id())==null) {
+			String inputPass = member.getMem_pass();
+			
 			int rowcnt = dao.insertMember(member);
 			if(rowcnt>0) {
 				result = ServiceResult.OK;

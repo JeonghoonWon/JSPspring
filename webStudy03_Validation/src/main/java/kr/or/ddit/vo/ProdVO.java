@@ -1,6 +1,7 @@
 package kr.or.ddit.vo;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -59,6 +60,8 @@ public class ProdVO implements Serializable {
 	private Integer prod_mileage;
 	
 	private BuyerVO buyer; // has a(1:1) 관계	
+	
+	private Set<MemberVO> userList;	// has many 관계
 }
 
 

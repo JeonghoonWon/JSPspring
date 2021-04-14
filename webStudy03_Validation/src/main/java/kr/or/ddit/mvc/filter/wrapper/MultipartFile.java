@@ -69,6 +69,11 @@ public class MultipartFile {
 		File saveFile = new File(saveFolder, uniqueSaveName); // 생성되는 파일 객체의 이름은 아무도 모른다.
 		adaptee.write(saveFile.getAbsolutePath()); // saveFile의 절대 경로에 파일을 저장하겠다.
 	}
+	public void transferTo(File dest) throws IOException {
+		this.uniqueSaveName = dest.getName();
+		adaptee.write(dest.getAbsolutePath());
+	}
+	
 	
 	public boolean isEmpty() {
 		// 비어있는 파일 구분 . 추가적인 속성 적용 가능

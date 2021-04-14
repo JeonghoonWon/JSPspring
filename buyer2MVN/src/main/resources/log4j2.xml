@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+appender : where(*로그를 어디다 남길것인지에 대한 정보*)
+(*appender에서 database에 넣을 수 있는 것을 찾음*)
+layout : how(*로그를 어떻게 등록할것인지*)
+message : (*설정파일에서 등록할 수 없음 => 누가 등록하니냐에 따라 달라지기 때문*)
+logger : who(*로그를 등록해주는 행위를 해주는 사람*) 
+logging event level : logger가 메시지를 기록할지 여부를 결정하는 기준.
+(*logger : 메세지를 실질적으로 기록해주는 것 / 가장 낮은 등급은 debug / 가장 높은 등급은 fatal
+/ 지정한 것 이상의 등급의 메시지를 남겨줌  *)
+debug -> info -> warn -> error -> fatal
+logger 에 설정된 이벤트 등급 이상의 이벤트 메시지만 기록.(*logger event 등급이 의미하는 것*)
+-->
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="[%t] %-5level %logger{1.} - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+	<Logger name="kr.or.ddit" level="debug" additivity="false">
+		<AppenderRef ref="Console" />
+	</Logger>
+	<Logger name="jdbc.sqltiming" level="debug" additivity="false">
+		<AppenderRef ref="Console" />
+	</Logger>
+	<Logger name="jdbc.resultsettable" level="debug" additivity="false">
+		<AppenderRef ref="Console" />
+	</Logger>
+	<Root level="error">
+		<AppenderRef ref="Console" />
+	</Root>
+	</Loggers>
+</Configuration>

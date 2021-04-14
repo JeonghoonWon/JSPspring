@@ -63,9 +63,17 @@ public class ProdInsertController {
 		Map<String, List<String>> errors = new LinkedHashMap<>();
 		req.setAttribute("errors", errors);
 		// 검증의 대상 : prod 
+//		EDD / TestDrivenDevelopment 
+//		EventDrivenDevelopment : 이벤트가 발생하면 작업을 진행 하는것.
+
+//		서버 사이트에서 처리할 수 있는 이벤트 알아보자.
 		
 		String saveFolderUrl = "/prodImages";
 		File saveFolder = new File(req.getServletContext().getRealPath(saveFolderUrl));
+	if(!saveFolder.exists()) {
+		saveFolder.mkdirs();
+	}
+		
 		if(!prod_image.isEmpty()) {
 			prod_image.saveTO(saveFolder);
 			prod.setProd_img(prod_image.getUniqueSaveName());

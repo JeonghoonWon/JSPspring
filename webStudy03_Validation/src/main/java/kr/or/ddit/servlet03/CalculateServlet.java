@@ -18,7 +18,7 @@ import kr.or.ddit.servlet03.view.JsonView;
 import kr.or.ddit.servlet03.view.XmlView;
 import kr.or.ddit.vo.CalculateVO;
 
-@WebServlet("/03/calculator")
+@WebServlet("/03/calculator")   
 public class CalculateServlet extends HttpServlet {
 	// 전역변수를 사용하게된다면 불특정다수가 하나의 전역변수를 사용하게되고 싱글톤에서 하나만
 	@Override
