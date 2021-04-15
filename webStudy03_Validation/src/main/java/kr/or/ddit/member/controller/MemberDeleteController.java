@@ -17,6 +17,7 @@ import kr.or.ddit.member.service.MemberServiceImpl;
 import kr.or.ddit.mvc.annotation.Controller;
 import kr.or.ddit.mvc.annotation.RequestMapping;
 import kr.or.ddit.mvc.annotation.RequestMethod;
+import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
 import kr.or.ddit.vo.MemberVO;
 
 //@WebServlet("/member/memberDelete.do")
@@ -25,20 +26,10 @@ public class MemberDeleteController{
 	private IMemberService service = new MemberServiceImpl();
 
 		@RequestMapping(value ="/member/memberDelete.do", method = RequestMethod.POST )
-		public String doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setCharacterEncoding("UTF-8");
-		
-		String password = req.getParameter("password");
-		System.out.println(password);
-		if(password==null||password.isEmpty()) {		// password null check
-			resp.sendError(400);					// null or 빈 공간 : error 400
-			return null;
-		}
-		
-		
-//		1. 요청 접수
-		
-		HttpSession session =  req.getSession();
+		public String doPost(
+					@RequestParam("password") String password
+					,HttpSession session) throws ServletException, IOException {
+
 		MemberVO authMember =(MemberVO) session.getAttribute("authMember");
 		String authId = authMember.getMem_id();
 		ServiceResult result=  service.removeMember(new MemberVO(authId,password));

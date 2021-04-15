@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>My page</title>
+<title>회원이름 클릭 페이지</title>
 <jsp:include page="/includee/preScript.jsp" />
 </head>
 <body>
@@ -94,10 +94,9 @@
 			<td>${member.mem_delete}</td>
 		</tr>
 
-		<td colspan="2"><input type="button" value="수정"
-			class="controlBtn" id="updateBtn">
-
-			<button type="button" class="controlBtn" id="deleteBtn">탈퇴</button></td>
+		<td colspan="2"><input type="button" value="멤버리스트로 이동"
+			class="controlBtn" id="memberListBtn">
+		</td>
 		<tr>
 		<tr>
 			<th>구매목록</th>
@@ -151,9 +150,9 @@
 		let deleteForm = $("#deleteForm");
 		$(".controlBtn").on("click", function(){
 			let btnId = $(this).prop("id");
-			if(btnId =="updateBtn"){
+			if(btnId =="memberListBtn"){
 				//alert("수정")
-				location.href="${cPath }/member/memberUpdate.do";
+				location.href="${cPath }/member/memberList.do";
 
 							} else if (btnId == "deleteBtn") {
 								let password = prompt("비번 입력");

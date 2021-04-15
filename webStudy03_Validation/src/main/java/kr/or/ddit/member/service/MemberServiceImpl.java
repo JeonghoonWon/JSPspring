@@ -25,6 +25,9 @@ public class MemberServiceImpl implements IMemberService {
 		}
 		return savedMember;
 	}
+	
+	
+	
 
 	@Override
 	public ServiceResult createMember(MemberVO member) {

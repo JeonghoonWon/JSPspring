@@ -32,7 +32,13 @@
 					<tr>
 						<td>${member.rnum }</td>
 						<td>${member.mem_id }</td>
-						<td>${member.mem_name}</td>
+						<td>
+						<c:url value="/member/memberView.do" var="viewURL">
+							<c:param name="who" value="${member.mem_id}" />
+						</c:url>						
+						<a href="${viewURL }">${member.mem_name}</a> 
+						
+						</td>
 						<td>${member.mem_mail }</td>
 						<td>${member.mem_hp }</td>
 						<td>${member.mem_mileage }</td>

@@ -24,6 +24,7 @@ public interface IMemberService {
 	 */
 	public MemberVO retrieveMember(String mem_id);
 	
+		
 	/**
 	 * 신규 등록
 	 * @param member

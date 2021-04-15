@@ -20,6 +20,7 @@ import kr.or.ddit.member.service.MemberServiceImpl;
 import kr.or.ddit.mvc.annotation.Controller;
 import kr.or.ddit.mvc.annotation.RequestMapping;
 import kr.or.ddit.mvc.annotation.RequestMethod;
+import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
 
 //@WebServlet("/member/idCheck.do")
 @Controller
@@ -27,16 +28,11 @@ public class IdCheckController{
 	private IMemberService service = new MemberServiceImpl();
 	
 		@RequestMapping(value ="/member/idCheck.do", method = RequestMethod.POST)
-		public String doPost(HttpServletRequest req, 
-				HttpServletResponse resp) throws ServletException, IOException {
-		req.setCharacterEncoding("UTF-8");
-		String view = null;
-		String mem_id = req.getParameter("id"); // 아이디 가져오기
-		if(mem_id==null||mem_id.isEmpty()) {		// 아이디 null check
-			resp.sendError(400);					// null or 빈 공간 : error 400
-			return null;
-		}
-				
+		public String doPost(
+				@RequestParam("id") String mem_id
+				, HttpServletResponse resp) throws ServletException, IOException {
+
+					
 		Map<String,Object> resultMap = new HashMap<>();
 		
 		try {
@@ -55,6 +51,6 @@ public class IdCheckController{
 			
 		}
 		 
-		return view;
+		return null;
 	}
 }

@@ -13,6 +13,8 @@ import kr.or.ddit.member.service.IMemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
 import kr.or.ddit.mvc.annotation.Controller;
 import kr.or.ddit.mvc.annotation.RequestMapping;
+import kr.or.ddit.mvc.annotation.resolvers.ModelAttribute;
+import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.SearchVO;
@@ -21,22 +23,27 @@ import kr.or.ddit.vo.SearchVO;
 @Controller
 public class MemberListController {
 	private IMemberService service = new MemberServiceImpl();
-
+	
+	@RequestMapping("/member/memberView.do")
+	public String memberView(
+			@RequestParam("who") String mem_id
+			,HttpServletRequest req) {
+	
+	MemberVO member = service.retrieveMember(mem_id);
+	req.setAttribute("member", member);
+	return "member/mypage";
+}
+	
+	
 	@RequestMapping("/member/memberList.do")
-	public String doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setCharacterEncoding("UTF-8");
-		
-		String searchType = req.getParameter("searchType");
-		String searchWord = req.getParameter("searchWord");
+	public String memberList(
+			@ModelAttribute("searchVO") SearchVO searchVO
+			,@RequestParam(value="page", required=false, defaultValue="1") int currentPage
+			,HttpServletRequest req)  {
+
 		// 검색을 하는 사람도 있고 아닌 사람도 있기 때문에 검증을 할 필요가 없다.
-		SearchVO searchVO = new SearchVO(searchType, searchWord);
+
 		
-		String pageParam = req.getParameter("page");
-		int currentPage = 1;
-		if(pageParam!=null && pageParam.matches("\\d+"))	{	// \\d : 숫자 하나 \\d+ : 숫자 하나 이상
-			// 
-			currentPage = Integer.parseInt(pageParam);
-		}
 		//속성을 전부 가지고 있게된다.
 		PagingVO<MemberVO> pagingVO = new PagingVO(7,2);
 		pagingVO.setCurrentPage(currentPage);
@@ -53,8 +60,8 @@ public class MemberListController {
 		
 		req.setAttribute("pagingVO", pagingVO);
 		
-		String view = "member/memberList";
+		return "member/memberList";
 			//req.getRequestDispatcher(view).forward(req, resp);
-		return view;
+	
 	}
 }
