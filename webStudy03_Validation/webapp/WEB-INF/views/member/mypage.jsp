@@ -10,7 +10,7 @@
 <jsp:include page="/includee/preScript.jsp" />
 </head>
 <body>
-	<jsp:useBean id="member" class="kr.or.ddit.vo.MemberVO" scope="request" />
+
 	<h4>${member.mem_name} 님의 마이페이지</h4>
 	<table border="1">
 		<tr>
@@ -94,10 +94,10 @@
 			<td>${member.mem_delete}</td>
 		</tr>
 
-		<td colspan="2"><input type="button" value="수정"
-			class="controlBtn" id="updateBtn">
-
-			<button type="button" class="controlBtn" id="deleteBtn">탈퇴</button></td>
+		<td colspan="2">
+		<input type="button" value="수정"	class="controlBtn" id="updateBtn">
+		<button type="button" class="controlBtn" id="deleteBtn">탈퇴</button>
+		</td>
 		<tr>
 		<tr>
 			<th>구매목록</th>
@@ -116,13 +116,13 @@
 						</tr>
 					</thead>
 					<tbody>
+					<c:set var="prodList" value="${member.prodList }" />
 						<c:choose>
-							<c:when test="${not empty member.prodList}">
-								<c:forEach items="${member.prodList}" var="prod">
+							<c:when test="${not empty prodList}">
+								<c:forEach items="${prodList}" var="prod">
 									<tr>
 										<td>${prod.prod_id}</td>
-										<td><a
-											href="${cPath}/prod/prodView.do?what=${prod.prod_id}">${prod.prod_name}</a></td>
+										<td><a href="${cPath}/prod/prodView.do?what=${prod.prod_id}">${prod.prod_name}</a></td>
 										<td>${prod.lprod_nm}</td>
 										<td>${prod.buyer.buyer_name}</td>
 										<td>${prod.prod_cost}</td>
@@ -142,9 +142,7 @@
 			</td>
 		</tr>
 	</table>
-	<form id="deleteForm"
-		action="<%=request.getContextPath()%>/member/memberDelete.do"
-		method="post">
+	<form id="deleteForm" action="${cPath }/member/memberDelete.do" method="post">
 		<input type="hidden" name="password" />
 	</form>
 	<script type="text/javascript">
@@ -154,21 +152,19 @@
 			if(btnId =="updateBtn"){
 				//alert("수정")
 				location.href="${cPath }/member/memberUpdate.do";
+			} else if (btnId == "deleteBtn") {
+				let password = prompt("비번 입력");
+				//alert , prompt
+				if (!password) { // 비밀번호를 입력 하지 않은 경우
+					return;
+				}
+				deleteForm.find("[name='password']").val(password);
+				deleteForm.submit(); // trigger 도 가능.
+			}
 
-							} else if (btnId == "deleteBtn") {
-								let password = prompt("비번 입력");
-								//alert , prompt
-								if (!password) { // 비밀번호를 입력 하지 않은 경우
-									return;
-								}
-								deleteForm.find("[name='password']").val(
-										password);
-								deleteForm.submit(); // trigger 도 가능.
-							}
+			//	/member/memberUpdate.do
 
-							//	/member/memberUpdate.do
-
-						});
+		});
 	</script>
 
 </body>

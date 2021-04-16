@@ -10,7 +10,7 @@
 <jsp:include page="/includee/preScript.jsp" />
 </head>
 <body>
-	<jsp:useBean id="member" class="kr.or.ddit.vo.MemberVO" scope="request" />
+	
 	<h4>${member.mem_name} 님의 마이페이지</h4>
 	<table border="1">
 		<tr>

@@ -39,29 +39,24 @@ public class MemberUpdateController{
 	}
 		
 	
-		@RequestMapping("/member/memberUpdate.do")
-		public String doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	@RequestMapping("/member/memberUpdate.do")
+	public String updateForm(HttpSession session, HttpServletRequest req){
 		addCommandAttribute(req);
-		HttpSession session =  req.getSession();
-		MemberVO authMember =(MemberVO) session.getAttribute("authMember");
+		MemberVO authMember =  (MemberVO) session.getAttribute("authMember");
 		String authId = authMember.getMem_id();
-		MemberVO member = service.retrieveMember(authId);
-		//memberForm.jsp 재활용
-		req.setAttribute("member", member);
-		String view = "member/memberForm";
-					
-		//req.getRequestDispatcher(view).forward(req, resp);
-		return view;
-		}
+ 		MemberVO member = service.retrieveMember(authId);
+ 		req.setAttribute("member", member);
+ 		return "member/memberForm";
+	}
 	
 		@RequestMapping(value ="/member/memberUpdate.do", method = RequestMethod.POST )
 		public String doPost(@ModelAttribute("member") MemberVO member
 				, @RequestPart(value="mem_image", required=false) MultipartFile mem_image
 				, HttpSession session
-				,HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+				,HttpServletRequest req) throws IOException {
 		addCommandAttribute(req);
 		
-		req.setCharacterEncoding("UTF-8");
+
 		
 //		1. 요청 접수
 //		MemberVO member = new MemberVO();

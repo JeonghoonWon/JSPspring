@@ -63,6 +63,7 @@
 			<id property="mem_id" column="MEM_ID" />
 		</collection>
 	</resultMap>
+	
 	<select id="selectProd" parameterType="string"
 		resultMap="prodMap">
 		WITH CARTMEMBER AS 

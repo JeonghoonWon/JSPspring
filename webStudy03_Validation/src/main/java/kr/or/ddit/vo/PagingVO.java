@@ -2,6 +2,7 @@ package kr.or.ddit.vo;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,9 @@ public class PagingVO<T> implements Serializable{
 	private List<T> dataList;
 	// T 자리에 어떤게 들어오냐에 따라 달라짐.
 	private SearchVO simpleSearch;
+	
+	// Map 생성 Object : 검색 조건을 담는다. // controller 와 jsp 와 xml 설정을 바꾼다.
+	private Map<String, Object> searchMap;
 	
 	// ProdVO 
 	// private ProdVO detailSearch;
@@ -88,8 +92,69 @@ public class PagingVO<T> implements Serializable{
 		
 		
 	}
+	private static String pageItem = "<li class='page-item %s' %s>"
+			+"<a class='page-link' href='#' data-page='%d'>%s</a>"
+			+ "</li>";
 
-	
-	
-	
+	public String getPagingHTMLBS() {
+		StringBuffer html = new StringBuffer();
+		html.append("<nav aria-label='...' class='mt-3'>");
+		html.append("<ul class='pagination'>");
+		String first = null;
+		String second = null;
+		int third = -1;
+		String fourth = "<<";
+		if(startPage > 1) {
+			first = "";
+			second = "";
+			third = startPage - 1;
+		}else {
+			first ="disabled";
+			second = "tabindex='-1' aria-disabled='true'";
+			third = -1;
+		}
+		html.append(
+			String.format(pageItem, first, second, third, fourth)	
+		);
+		endPage = endPage < totalPage ? endPage : totalPage;
+		for(int page=startPage; page<=endPage; page++) {
+			second = "";
+			third = page;
+			fourth = page + "";
+			
+			if(page==currentPage) {
+				first = "active";
+			}else {
+				first = "";
+			}
+			html.append(
+				String.format(pageItem, first, second, third, fourth)	
+			);
+		}
+		fourth = ">>";
+		if(endPage < totalPage) {
+			first = "";
+			second = "";
+			third = endPage + 1;
+		}else {
+			first ="disabled";
+			second = "tabindex='-1' aria-disabled='true'";
+			third = -1;
+		}
+		html.append(
+			String.format(pageItem, first, second, third, fourth)	
+		);
+		html.append("</ul>");
+		html.append("</nav>");
+		return html.toString();
+	}
 }
+
+
+
+
+
+
+
+
+
