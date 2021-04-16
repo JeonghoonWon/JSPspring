@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,7 +21,7 @@
 </head>
 <body>
 <form method="post">
-	<table>
+	<table class = "table table-striped">
 		<input type="hidden" name="buyer_id" value="${buyer.buyer_id}"/>
 		<tr>
 			<th>거래처명</th>
@@ -138,5 +139,8 @@
 		</tr>
 	</table>
 </form>
+
+<jsp:include page="/includee/postScript.jsp" />
+
 </body>
 </html>	

@@ -9,7 +9,7 @@
 </head>
 <body>
 	<h4>${buyer.buyer_name} 거래처 상세 정보</h4>
-	<table>
+	<table class="table table-dark table-striped">
 		<tr>
 			<th>거래처아이디</th>
 			<td>${buyer.buyer_id}</td>
@@ -92,5 +92,7 @@
 			}
 		})
 	</script>
+	
+		<jsp:include page="/includee/postScript.jsp" />
 </body>
 </html>

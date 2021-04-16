@@ -16,6 +16,11 @@
 		<param-name>contentFolder</param-name>
 		<param-value>d:/contents</param-value>
 	</context-param>
+	
+	<listener>
+		<listener-class>kr.or.ddit.listener.CustomServletContextListener</listener-class>
+	</listener>
+	
 	<servlet>
 		<servlet-name>FrontController</servlet-name>
 		<servlet-class>kr.or.ddit.mvc.FrontController</servlet-class>
