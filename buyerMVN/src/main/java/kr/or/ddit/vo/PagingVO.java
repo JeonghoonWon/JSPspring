@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 // 기존 적용해두었던 setter 가 있으면 그게 적용된다.
+@Setter
 @Getter
 @NoArgsConstructor
 public class PagingVO<T> implements Serializable{
