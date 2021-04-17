@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
  * {@link HttpServletRequest}
  * {@link HttpServletResponse}
  * {@link HttpSession}
- *	위의 세가지 종류의 행들러 메소드 아규먼트를 처리할 처리자.
+ *	위의 세가지 종류의 핸들러 메소드 아규먼트를 처리할 처리자.
  */
 public class ServletSpecArgumentResolver implements IHandlerMethodArgumentResolver {
 

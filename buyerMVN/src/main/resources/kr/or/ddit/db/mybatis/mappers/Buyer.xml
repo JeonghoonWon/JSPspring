@@ -52,7 +52,7 @@
 	    	BUYER_ID, BUYER_NAME, BUYER_LGU,
 			BUYER_BANK, BUYER_BANKNO, BUYER_BANKNAME,
 			BUYER_ZIP, BUYER_ADD1, BUYER_ADD2,
-			BUYER_COMTEL, BUYER_FAX, BUYER_MAIL,
+			BUYER_COMTEL, BUYER_FAX, BUYER_MAIL,BUYER_IMG,
 			BUYER_CHARGER, BUYER_TELEXT, BUYER_DELETE,LPROD_NM
 		<include refid="fromFrag"/>
 		WHERE BUYER_ID = #{buyer_id}
@@ -70,7 +70,7 @@
 		    BUYER_BANK, BUYER_BANKNO, BUYER_BANKNAME,
 		    BUYER_ZIP, BUYER_ADD1, BUYER_ADD2,
 		    BUYER_COMTEL, BUYER_FAX, BUYER_MAIL,
-		    BUYER_CHARGER,BUYER_TELEXT
+		    BUYER_CHARGER,BUYER_TELEXT,BUYER_IMG
 		) VALUES (
 		    #{buyer_id, jdbcType=VARCHAR},#{buyer_name, jdbcType=VARCHAR},
 		    #{buyer_lgu, jdbcType=VARCHAR},#{buyer_bank, jdbcType=VARCHAR},
@@ -78,12 +78,14 @@
 		   	#{buyer_zip, jdbcType=VARCHAR},#{buyer_add1, jdbcType=VARCHAR},
 		    #{buyer_add2, jdbcType=VARCHAR}, #{buyer_comtel, jdbcType=VARCHAR},
 		    #{buyer_fax, jdbcType=VARCHAR},#{buyer_mail, jdbcType=VARCHAR},
-		    #{buyer_charger, jdbcType=VARCHAR},#{buyer_telext, jdbcType=VARCHAR}
+		    #{buyer_charger, jdbcType=VARCHAR},#{buyer_telext, jdbcType=VARCHAR},
+		    #{buyer_img, jdbcType=VARCHAR}
 		)
 	</insert>
 	
 	<update id="updateBuyer" parameterType="BuyerVO">
-		UPDATE BUYER SET
+		UPDATE BUYER 
+		SET
 			BUYER_NAME    = #{buyer_name, jdbcType=VARCHAR},
 			BUYER_LGU     = #{buyer_lgu, jdbcType=VARCHAR},
 			BUYER_BANK    = #{buyer_bank, jdbcType=VARCHAR},
@@ -97,6 +99,10 @@
 			BUYER_MAIL    = #{buyer_mail, jdbcType=VARCHAR},
 			BUYER_CHARGER = #{buyer_charger, jdbcType=VARCHAR},
 			BUYER_TELEXT  = #{buyer_telext, jdbcType=VARCHAR}
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(buyer_img)">
+	    , BUYER_IMG		=	#{buyer_img, jdbcType=VARCHAR}
+	    </if>
+			
 		WHERE BUYER_ID = #{buyer_id, jdbcType=VARCHAR}
 	</update>
 	

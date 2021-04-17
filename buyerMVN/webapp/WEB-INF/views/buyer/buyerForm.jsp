@@ -20,13 +20,13 @@
 </c:if>
 </head>
 <body>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
 	<table class = "table table-striped">
 		<input type="hidden" name="buyer_id" value="${buyer.buyer_id}"/>
 		<tr>
 			<th>거래처명</th>
 			<td>
-				<input type="text" name="buyer_name"
+				<input type="text" required name="buyer_name"
 				value="${buyer.buyer_name}" />
 				<span class="error">"${errors.buyer_name}"</span>
 			</td>
@@ -34,7 +34,7 @@
 		<tr>
 			<th>거래처분류명</th>
 			<td>
-				<select name="buyer_lgu">
+				<select name="buyer_lgu" required>
 					<option value>상품분류</option>
 					<c:forEach items="${lprodList}" var="lprod">
 						<c:set var="selected" value='${lprod.lprod_gu eq buyer.buyer_lgu?"selected":""}'></c:set>
@@ -46,6 +46,13 @@
 				<span class="error">"${errors.buyer_lgu}"</span>
 			</td>
 		</tr>
+		<tr>
+			<th>이미지</th>
+			<td>
+				<input type ="file" name ="buyer_image" />
+				<span class="error">${errors["buyer_img"]}</span></td>
+		</tr>
+		
 		<tr>
 			<th>거래처은행</th>
 			<td>
@@ -97,7 +104,7 @@
 		<tr>
 			<th>거래처회사번호</th>
 			<td>
-				<input type="text" name="buyer_comtel" 
+				<input  required type="text"  name="buyer_comtel"
 				value="${buyer.buyer_comtel}" />
 				<span class="error">"${errors.buyer_comtel}"</span>
 			</td>
@@ -105,7 +112,7 @@
 		<tr>
 			<th>거래처팩스번호</th>
 			<td>
-				<input type="text" name="buyer_fax" 
+				<input  required type="text" name="buyer_fax" 
 				value="${buyer.buyer_fax}" />
 				<span class="error">"${errors.buyer_fax}"</span>
 			</td>
@@ -113,7 +120,7 @@
 		<tr>
 			<th>거래처메일</th>
 			<td>
-				<input type="text" name="buyer_mail" 
+				<input  required type="text" name="buyer_mail" 
 				value="${buyer.buyer_mail}" />
 				<span class="error">"${errors.buyer_mail}"</span>
 			</td>

@@ -1,5 +1,6 @@
 package kr.or.ddit.buyer.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,6 +19,8 @@ import kr.or.ddit.mvc.annotation.RequestMapping;
 import kr.or.ddit.mvc.annotation.RequestMethod;
 import kr.or.ddit.mvc.annotation.resolvers.ModelAttribute;
 import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
+import kr.or.ddit.mvc.annotation.resolvers.RequestPart;
+import kr.or.ddit.mvc.filter.wrapper.MultipartFile;
 import kr.or.ddit.validator.CommonValidator;
 import kr.or.ddit.validator.UpdateGroup;
 import kr.or.ddit.vo.BuyerVO;
@@ -46,13 +49,25 @@ public class BuyerUpdateController{
 	@RequestMapping(value="/buyer/buyerUpdate.do", method=RequestMethod.POST)
 	public String Update(
 			@ModelAttribute("buyer") BuyerVO buyer,
-			HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+			 @RequestPart(value = "buyer_image", required=false) MultipartFile buyer_image
+			,HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		addAttribute(req);
 		Map<String, List<String>> errors = new LinkedHashMap<>();
 		req.setAttribute("errors", errors);
+	
+		String saveFolderUrl = "/buyerImages";
+		File saveFolder = new File(req.getServletContext().getRealPath(saveFolderUrl));
+		if(buyer_image!=null && !buyer_image.isEmpty()) {
+			buyer_image.saveTO(saveFolder);
+			buyer.setBuyer_img(buyer_image.getUniqueSaveName());
+		
+		}
 		boolean valid =new CommonValidator<BuyerVO>().validate(buyer, errors, UpdateGroup.class);
 		String view = null;
 		String message = null;
+		
+		
+		
 		if(valid) {
 			ServiceResult result = service.modifyBuyer(buyer);
 			switch(result) {

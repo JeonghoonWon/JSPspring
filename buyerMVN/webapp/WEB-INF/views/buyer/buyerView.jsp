@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,6 +22,10 @@
 		<tr>
 			<th>거래처분류명</th>
 			<td>${buyer.lprod_nm}</td>
+		</tr>
+		<tr>
+			<th>이미지</th>
+			<td><img src="${cPath }/buyerImages/${buyer.buyer_img}"></td>
 		</tr>
 		<tr>
 			<th>거래처은행</th>
