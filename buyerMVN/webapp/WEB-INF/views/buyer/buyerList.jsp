@@ -61,8 +61,7 @@
 		src="<%=request.getContextPath()%>/js/buyer/buyerList.js"></script>
 	<script type="text/javascript">
    $("#newBtn").on("click", function(){
-      location.href="<%=request.getContextPath()%>
-		/buyer/buyerInsert.do";
+      location.href="<%=request.getContextPath()%>/buyer/buyerInsert.do";
 						})
 	</script>
 	<jsp:include page="/includee/postScript.jsp" />

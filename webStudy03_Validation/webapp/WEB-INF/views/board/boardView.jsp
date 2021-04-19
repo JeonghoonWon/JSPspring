@@ -1,18 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>	
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>board/boardView.jsp</title>
+<title>Insert title here</title>
 <jsp:include page="/includee/preScript.jsp" />
 </head>
 <body>
-	
-	<h4>${board.bo_no}</h4>
 	<table class="table table-bordered">
-			<tr>
+		<tr>
 			<th>게시판종류</th>
 			<td>${board.bo_type}</td>
 		</tr>
@@ -45,10 +43,34 @@
 			<td>${board.bo_rep}</td>
 		</tr>
 		<tr>
+			<th>첨부파일</th>
+			<td>
+				<c:if test="${not empty board.attatchList }">
+					<c:forEach items="${board.attatchList }" var="attatch">
+						<span>${attatch.att_filename }</span>
+					</c:forEach>
+				</c:if>
+			</td>
+		</tr>
+		<tr>
 			<th>내용</th>
 			<td>${board.bo_content}</td>
 		</tr>
+		<tr>
+			<td colspan="2">
+				<c:url value="/board/boardList.do" var="listURL" />
+				<button class="goBtn btn btn-primary" type="button" 
+					data-gopage="${listURL }">목록으로</button>
+			</td>
+		</tr>
 	</table>
+	<script type="text/javascript">
+		$(".goBtn").on("click", function(){
+			let url = $(this).data("gopage");
+			if(url)
+				location.href = url;
+		});
+	</script>
 	<jsp:include page="/includee/postScript.jsp" />
 </body>
 </html>

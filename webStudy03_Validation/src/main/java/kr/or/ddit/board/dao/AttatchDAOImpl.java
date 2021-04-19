@@ -1,5 +1,6 @@
 package kr.or.ddit.board.dao;
 
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import kr.or.ddit.db.mybatis.CustomSqlSessionFactoryBuilder;
@@ -19,10 +20,15 @@ public class AttatchDAOImpl implements IAttatchDAO {
 	
 	@Override
 	public int insertAttatches(BoardVO board) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+		try(	// insert 가 수행될때 commit 이2번 실행된다. 이게 맞는건지 확인해야함.
+				SqlSession session = sessionFactory.openSession();
+			){
+				IAttatchDAO mapper = session.getMapper(IAttatchDAO.class);
+				int cnt =  mapper.insertAttatches(board);
+				session.commit();
+				return cnt;
+			}
+		}
 	@Override
 	public AttatchVO selectAttatch(int att_no) {
 		// TODO Auto-generated method stub

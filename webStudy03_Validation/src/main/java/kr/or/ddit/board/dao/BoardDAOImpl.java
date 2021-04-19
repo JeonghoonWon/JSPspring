@@ -22,9 +22,15 @@ public class BoardDAOImpl implements IBoardDAO {
 
 	@Override
 	public int insertBoard(BoardVO board) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+		try(
+				SqlSession session = sessionFactory.openSession();
+			){
+				IBoardDAO mapper = session.getMapper(IBoardDAO.class);
+				int cnt =  mapper.insertBoard(board);
+				session.commit();
+				return cnt;
+			}
+		}
 
 	@Override
 	public int selectBoardCount(PagingVO<BoardVO> pagingVO) {

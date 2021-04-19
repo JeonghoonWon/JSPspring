@@ -1,4 +1,4 @@
-<%@page import="kr.or.ddit.utils.CookieUtils"%>
+<%-- <%@page import="kr.or.ddit.utils.CookieUtils"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.util.Map"%>
@@ -28,7 +28,7 @@
 	1. 네개의 영역의 속성들을 표현할 때 사용 (****** 중요).
 	2. 연산자 지원
 		산술연산자 : +-*/%  ${2/3 },(결과:0.6666666666666666) ${"2"+"3" } (결과: 5), 연산자가 중심. 그래서 결과 5
-					 ${"2"+3 }, (결과: 5),<%--  ${"a" + 3 } (연산 불가. 500error) --%>
+					 ${"2"+3 }, (결과: 5), ${"a" + 3 } (연산 불가. 500error)
 					 <%  %> 연산의 결과가 문자. 연산의 중심이 되는건 피 연산자의 데이터 타입. 그래서 결과가 23
 		논리연산자 : &&(and) , ||(or) , !(not), ^(xor)
 					${true and true }, ${true and "true" }, \${false or 3 } <!-- \ escape  -->
@@ -85,7 +85,7 @@
 		map.put("key-2", new Date());
 		session.setAttribute("sampleMap",map);
 	%>
-	${array[1] }, <%--=array[2] --%> ${array[2] }
+	${array[1] }, =array[2] ${array[2] }
 	\${sampleList.get(3)},
 	 ${sampleList[0] } ${sampleList[3] } 
 	 ${pageScope.sampleSet }
@@ -145,4 +145,4 @@
 		</pre>
 
 </body>
-</html>
+</html> --%>

@@ -26,7 +26,7 @@ public class AttatchVO implements Serializable {
 	private transient MultipartFile file;	// transient 파일의 직렬화 제외 
 	
 	//생성자를 통해 파일을 받아야한다.
-	private Integer bo_no;
+
 	public AttatchVO(MultipartFile file) {
 		super();
 		this.file = file;
@@ -35,7 +35,7 @@ public class AttatchVO implements Serializable {
 		this.att_contenttype = file.getContentType();
 		this.att_size = file.getFileSize(); // size 가 맞지않기 때문에 att_size 를 long 으로 변경해준다.
 	}
-
+	private Integer bo_no;
 	private Integer att_no;
 	private String att_filename;
 	private String att_savename;

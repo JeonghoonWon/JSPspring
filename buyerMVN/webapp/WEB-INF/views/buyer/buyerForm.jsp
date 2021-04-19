@@ -26,7 +26,7 @@
 		<tr>
 			<th>거래처명</th>
 			<td>
-				<input type="text" required name="buyer_name"
+				<input type="text"  name="buyer_name"
 				value="${buyer.buyer_name}" />
 				<span class="error">"${errors.buyer_name}"</span>
 			</td>
@@ -34,7 +34,7 @@
 		<tr>
 			<th>거래처분류명</th>
 			<td>
-				<select name="buyer_lgu" required>
+				<select name="buyer_lgu" >
 					<option value>상품분류</option>
 					<c:forEach items="${lprodList}" var="lprod">
 						<c:set var="selected" value='${lprod.lprod_gu eq buyer.buyer_lgu?"selected":""}'></c:set>
@@ -104,7 +104,7 @@
 		<tr>
 			<th>거래처회사번호</th>
 			<td>
-				<input  required type="text"  name="buyer_comtel"
+				<input   type="text"  name="buyer_comtel"
 				value="${buyer.buyer_comtel}" />
 				<span class="error">"${errors.buyer_comtel}"</span>
 			</td>
@@ -112,7 +112,7 @@
 		<tr>
 			<th>거래처팩스번호</th>
 			<td>
-				<input  required type="text" name="buyer_fax" 
+				<input   type="text" name="buyer_fax" 
 				value="${buyer.buyer_fax}" />
 				<span class="error">"${errors.buyer_fax}"</span>
 			</td>
@@ -120,7 +120,7 @@
 		<tr>
 			<th>거래처메일</th>
 			<td>
-				<input  required type="text" name="buyer_mail" 
+				<input   type="text" name="buyer_mail" 
 				value="${buyer.buyer_mail}" />
 				<span class="error">"${errors.buyer_mail}"</span>
 			</td>
