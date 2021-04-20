@@ -42,6 +42,8 @@
 			<th>신고수</th>
 			<td>${board.bo_rep}</td>
 		</tr>
+			<tr>
+				
 		<tr>
 			<th>첨부파일</th>
 			<td>
@@ -58,9 +60,20 @@
 		</tr>
 		<tr>
 			<td colspan="2">
-				<c:url value="/board/boardList.do" var="listURL" />
-				<button class="goBtn btn btn-primary" type="button" 
-					data-gopage="${listURL }">목록으로</button>
+				<c:url value="/board/boardList.do" var="listURL"/>
+				<a class="btn btn-outline-primary"
+					href="${listURL }">목록으로</a>
+			
+				<a class="btn btn-outline-secondary" href="${cPath }/board/noticeList.do">공지글 목록</a>
+				<c:url value="/board/boardInsert.do" var ="insertURL">
+					<c:param name = "parent" value = "${board.bo_no }" />
+				</c:url>
+				<a  class="btn btn-outline-success" href="${insertURL}">답글쓰기</a>
+				
+				<c:url value = "/board/boardUpdate.do" var ="updateURL">
+					<c:param name ="what" value ="${board.bo_no }" />
+				</c:url>
+				<a class="btn btn-outline-warning" href="${updateURL }">수정하기</a>
 			</td>
 		</tr>
 	</table>

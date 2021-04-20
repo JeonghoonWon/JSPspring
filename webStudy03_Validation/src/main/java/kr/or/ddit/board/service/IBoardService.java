@@ -26,6 +26,11 @@ public interface IBoardService {
 	 * @return 존재하지 않는다면 cusntom exception
 	 */
 	public BoardVO retrieveBoard(BoardVO search);	// 게시글이 존재하지않는 경우 예외 발생시켜야함
+	/**
+	 * 게시글 수정
+	 * @param board
+	 * @return 
+	 */
 	public ServiceResult modifyBoard(BoardVO board);	// 게시글이 존재하는 지 확인 - > pass 확인 => 암호화를 통해 확인 => 그다음 수정 => 수정 후 성공 여부 판단
 	public ServiceResult removeBoard(BoardVO search); // modifyBoard 와 동일. 게시글이 존재하는 지 확인 - > pass 확인 => 암호화를 통해 확인 => 그다음 수정 => 수정 후 성공 여부 판단
 

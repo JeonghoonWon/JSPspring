@@ -17,10 +17,12 @@ import kr.or.ddit.mvc.annotation.Controller;
 import kr.or.ddit.mvc.annotation.RequestMapping;
 import kr.or.ddit.mvc.annotation.RequestMethod;
 import kr.or.ddit.mvc.annotation.resolvers.ModelAttribute;
+import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
 import kr.or.ddit.mvc.annotation.resolvers.RequestPart;
 import kr.or.ddit.mvc.filter.wrapper.MultipartFile;
 import kr.or.ddit.validator.CommonValidator;
 import kr.or.ddit.validator.InsertGroup;
+import kr.or.ddit.validator.NoticeInsertGroup;
 import kr.or.ddit.vo.AttatchVO;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.utils.RegexUtils;
@@ -31,11 +33,31 @@ public class BoardInsertController {
 	
 	private IBoardService service = BoardServiceImpl.getInstance();
 
+	//공지 게시글
+	@RequestMapping("/board/noticeInsert.do")
+	public String noticeForm(@ModelAttribute("board") BoardVO board) {
+		board.setBo_type("NOTICE");
+		return "board/boardForm";
+		
+	}
+	
+	@RequestMapping(value = "/board/noticeInsert.do",method=RequestMethod.POST)
+	public String noticeInsert(
+						@ModelAttribute("board") BoardVO board
+						, HttpServletRequest req) {
+		return insert(board,null,req);
+		
+		
+	}
 	
 	
 	@RequestMapping("/board/boardInsert.do")
-	public String form(@ModelAttribute("board") BoardVO board) {
+	public String form(@ModelAttribute("board") BoardVO board
+			, @RequestParam(value="parent", required=false, defaultValue="0") int parent 
+				// 0이나 -숫자를 세팅해둬야함. 1이상을 사용하면 부모게시글이 될 수도 있다.
+			) {
 		board.setBo_type("BOARD");
+		board.setBo_parent(parent); // parent 값을 넣어준다.
 		return "board/boardForm";
 		
 	}
@@ -45,7 +67,8 @@ public class BoardInsertController {
 	@RequestMapping(value = "/board/boardInsert.do", method = RequestMethod.POST)
 	public String insert(@ModelAttribute("board")BoardVO board
 						,@RequestPart(value="bo_files",required=false) MultipartFile[] bo_files
-						,HttpServletRequest req, HttpSession session) {
+						,HttpServletRequest req) {
+			req.setAttribute("groupHint", NoticeInsertGroup.class);
 		
 		if(bo_files!=null) {
 			List<AttatchVO> attatchList = new ArrayList<>();
@@ -53,7 +76,7 @@ public class BoardInsertController {
 				if(file.isEmpty()) continue;
 				attatchList.add(new AttatchVO(file));
 			}
-			if(attatchList.size() >0)
+			if(attatchList.size() > 0)
 				board.setAttatchList(attatchList);
 				
 		}
@@ -62,9 +85,12 @@ public class BoardInsertController {
 		Map<String, List<String>> errors = new LinkedHashMap<>(); // List 로 넣으면 하나의 
 		req.setAttribute("errors", errors);
 		
-		
-		
-		boolean valid = new CommonValidator<BoardVO>().validate(board, errors, InsertGroup.class);
+		// req의 scope 를 사용해서 class를 담아오고 그걸 class 로 받아서 동적으로 받아준다.
+		Class<?> groupHint = (Class<?>) req.getAttribute("groupHint");
+		if(groupHint == null) {
+			groupHint = BoardInsertController.class;
+		}
+		boolean valid = new CommonValidator<BoardVO>().validate(board, errors, groupHint);
 		String view = null;
 		String message = null;
 		

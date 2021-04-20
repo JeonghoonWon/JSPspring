@@ -107,6 +107,19 @@ public class BoardReadController {
 		
 		return view;
 	}
+	@RequestMapping("/board/noticeList.do")
+	public String noticeList(
+				@RequestParam(value="searchType", required=false) String searchType
+				, @RequestParam(value="searchWord", required=false) String searchWord
+				, @RequestParam(value="page", required=false, defaultValue="1") int currentPage
+			    , @RequestParam(value="minDate", required=false) String minDate
+			    , @RequestParam(value="maxDate", required=false) String maxDate
+			    , HttpServletRequest req) throws ServletException, IOException {
+		searchType = "type";
+		searchWord = "NOTICE";
+		return list(currentPage, searchType, searchWord, minDate, maxDate, req);
+	}
+	
 
 		
 	 @RequestMapping("/board/boardList.do")
@@ -116,7 +129,7 @@ public class BoardReadController {
 	      @RequestParam(value="searchWord", required=false) String searchWord,
 	      @RequestParam(value="minDate", required=false) String minDate,
 	      @RequestParam(value="maxDate", required=false) String maxDate,
-	      HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+	      HttpServletRequest req) throws ServletException, IOException{
 	      
 	      PagingVO<BoardVO> pagingVO = new PagingVO<>();
 	      pagingVO.setCurrentPage(currentPage);

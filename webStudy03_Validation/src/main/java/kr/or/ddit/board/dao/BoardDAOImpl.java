@@ -21,16 +21,9 @@ public class BoardDAOImpl implements IBoardDAO {
 				CustomSqlSessionFactoryBuilder.getSessionFactory();	
 
 	@Override
-	public int insertBoard(BoardVO board) {
-		try(
-				SqlSession session = sessionFactory.openSession();
-			){
-				IBoardDAO mapper = session.getMapper(IBoardDAO.class);
-				int cnt =  mapper.insertBoard(board);
-				session.commit();
-				return cnt;
-			}
-		}
+	public int insertBoard(BoardVO board, SqlSession session) {
+		 return session.insert("kr.or.ddit.board.dao.IBoardDAO.insertBoard",board);  // mybatis 에 전달해야 하는 값만 전달 해준다. 
+	}
 
 	@Override
 	public int selectBoardCount(PagingVO<BoardVO> pagingVO) {
@@ -62,10 +55,19 @@ public class BoardDAOImpl implements IBoardDAO {
 			}
 		}
 	@Override
-	public int updateBoard(BoardVO board) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public int updateBoard(BoardVO board, SqlSession session) {
+		// interface 의 qualified name
+		return session.update("kr.or.ddit.board.dao.IBoardDAO.updateBoard", board);
+//		try(
+//				SqlSession session = sessionFactory.openSession();
+//			){
+		
+//				IBoardDAO mapper = session.getMapper(IBoardDAO.class);
+//				int cnt = mapper.updateBoard(board, session);
+////				session.commit();
+//				return cnt; 
+			}
+//		}
 
 	@Override
 	public int deleteBoard(BoardVO search) {

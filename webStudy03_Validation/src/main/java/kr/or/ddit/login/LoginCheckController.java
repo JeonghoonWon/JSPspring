@@ -48,6 +48,7 @@ public class LoginCheckController{
 			,HttpSession session) throws ServletException, IOException {
 	
 		if(session.isNew()) {
+			//
 			resp.sendError(400);
 			return null;
 		}

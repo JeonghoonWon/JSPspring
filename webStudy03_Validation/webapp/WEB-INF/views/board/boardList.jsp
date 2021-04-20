@@ -118,7 +118,7 @@
 							
 							<input class="btn btn-primary" id="newBtn" type="button" value= "insert" />
 				
-							
+							<input class="btn btn-primary" type ="button" value = "공지글쓰기" onclick="location.href='${cPath }/board/noticeInsert.do';" />
 							
 						<!-- submit -> button으로 변경  -->
 						<!-- 버튼을 누르면 searchForm 으로 정보가 넘어가게 처리해야 한다.  -->
