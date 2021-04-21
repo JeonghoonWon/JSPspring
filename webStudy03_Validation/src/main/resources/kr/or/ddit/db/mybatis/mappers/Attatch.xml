@@ -59,7 +59,7 @@
 	<select id="selectSaveNameForDelete" parameterType="BoardVO" resultType="string">
       SELECT ATT_SAVENAME
       FROM ATTATCH
-      WHERE ATT_NO IN 
+      WHERE ATT_NO IN
       <foreach collection="delAttNos" item="attNo" open="(" close=")" separator=",">
          #{attNo}
       </foreach>

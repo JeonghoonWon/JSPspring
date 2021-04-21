@@ -174,14 +174,47 @@ public class BoardServiceImpl implements IBoardService {
 
 	@Override
 	public ServiceResult removeBoard(BoardVO search) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+		try(
+				SqlSession session = sessionFactory.openSession();	
+			){
+				ServiceResult result = ServiceResult.FAIL;
+				BoardVO savedBoard = boardDAO.selectBoard(search);
+				encodePassword(search);
+				String savedPass = savedBoard.getBo_pass();
+				String inputPass = search.getBo_pass();
+				// 인증
+				if(savedPass.equals(inputPass)) {
+					// 첨부파일 삭제
+					List<AttatchVO> attatchList 
+						= savedBoard.getAttatchList();
+					if(attatchList.size()>0) {
+						int[] delAttNos = new int[attatchList.size()];
+						search.setDelAttNos(delAttNos);
+						for(int i = 0; i < delAttNos.length; i++) {
+							delAttNos[i] = 
+									attatchList.get(i).getAtt_no();
+						}	
+						deleteFileProcesses(search, session);
+					}// if(attatchList.size) end
+					
+					// 게시글 삭제
+					int cnt = boardDAO.deleteBoard(search, session);
+					if(cnt>0) {
+						result = ServiceResult.OK;
+						session.commit();
+					}
+				}else {
+					result = ServiceResult.INVALIDPASSWORD;
+				}
+				return result;
+			}
+		}
 	@Override
 	public AttatchVO download(int att_no) {
-		// TODO Auto-generated method stub
-		return null;
+		AttatchVO attatch = attatchDAO.selectAttatch(att_no);
+		if(attatch==null)
+			throw new CustomException( att_no + "에 해당하는 파일이 없음.");
+		return attatch;
 	}
 	@Override
 	public boolean boardAuthenticate(BoardVO search) {

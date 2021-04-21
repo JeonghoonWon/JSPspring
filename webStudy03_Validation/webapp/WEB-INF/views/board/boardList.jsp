@@ -9,11 +9,19 @@
 <meta charset="UTF-8">
 <title>board/boardList.jsp</title>
 <jsp:include page="/includee/preScript.jsp" />
+<style type="text/css">
+	.thumbnail{
+		width : 50px;
+		height : 50px;
+	}
+</style>
+
 <c:if test="${not empty message }">
 	<script type="text/javascript">
 		alert("${message}"); /* 여기까지 왔다는건 session 을 사용했다는것. 이제 session을 지워줘야한다. */	
 	</script>
 	<c:remove var="message" scope="session"/> <!-- 어디서 세션을 지워야 하는지 명시해줘야한다.  -->
+	<c:remove var="message" scope="request"/>
 </c:if>
 
 </head>
@@ -31,6 +39,7 @@
 			<tr>
 				<th>글종류</th>
 				<th>글번호</th>
+				<th>썸네일</th>
 				<th>제목</th>
 				<th>작성자</th>
 				<th>작성일</th>
@@ -48,6 +57,9 @@
 					<tr>
 						<td>${board.bo_type }</td>
 						<td>${board.bo_no }</td>
+						<td>
+							<img class="thumbnail" src ="${board.thumbnail }" />
+						</td>
 						<td>
 							<c:url value="/board/boardView.do" var ="viewURL">
 								<c:param name="what" value="${board.bo_no }" />

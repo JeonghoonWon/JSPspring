@@ -39,11 +39,14 @@ public class BoardUpdateController {
 		// 게시글 번호로 해당 글을 조회.
 		BoardVO search = new BoardVO();
 		search.setBo_no(bo_no);
-
+		
+		
 		BoardVO board = service.retrieveBoard(search);
 		
 		// 요청에 board setting.
 		req.setAttribute("board", board);
+		
+		String message = null;
 		
 		// 수정 폼으로 전달.
 		return "board/boardForm";

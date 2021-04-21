@@ -13,24 +13,24 @@
 </head>
 <body>
 	<form id ="boardForm" method="post" enctype="multipart/form-data">
-		<input type="hidden" name="bo_no" value="${board.bo_no }" /> <input
-			type="hidden" name="bo_type" value="${board.bo_type }"> <input
-			type="hidden" name="bo_parent" value="${board.bo_parent }" />
+		<input type="hidden" name="bo_no" value="${board.bo_no }" /> 
+		<input type="hidden" name="bo_type" value="${board.bo_type }"> 
+		<input type="hidden" name="bo_parent" value="${board.bo_parent }" />
 		<table class="table table-bordered">
 			<tr>
 				<th>제목</th>
-				<td>
-					<div class="input-group">
-						<input class="form-control col-9 mr-3" type="text" name="bo_title"
-							required value="${board.bo_title }" />
-						<div class="form-check col-2">
-							<input class="form-check-input" type="checkbox" id="bo_sec"
-								name="bo_sec" value="Y" ${board.bo_sec eq 'Y' ? 'checked':'' } />
-							<label class="form-check-label" for="bo_sec"> 비밀글 </label>
+					<td>
+						<div class="input-group">
+							<input class="form-control col-9 mr-3" type="text" name="bo_title"
+								required value="${board.bo_title }" />
+							<div class="form-check col-2">
+								<input class="form-check-input" type="checkbox" id="bo_sec"
+									name="bo_sec" value="Y" ${board.bo_sec eq 'Y' ? 'checked':'' } />
+								<label class="form-check-label" for="bo_sec"> 비밀글 </label>
+							</div>
+							<span class="error">${errors.bo_title }</span>
 						</div>
-						<span class="error">${errors.bo_title }</span>
-					</div>
-				</td>
+					</td>
 			</tr>
 			<c:if test="${board.bo_type eq 'BOARD' }">
 				<tr>

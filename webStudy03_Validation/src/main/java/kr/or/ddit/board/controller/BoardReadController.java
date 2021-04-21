@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -147,9 +151,30 @@ public class BoardReadController {
 	      
 	      List<BoardVO> boardList = service.retrieveBoardList(pagingVO);
 	      pagingVO.setDataList(boardList);
+	      
+	      for(BoardVO tmp : boardList) {
+	    	  String thumbnail = req.getContextPath() + "/images/Coca-Cola-logo.png";
+	    	  String source = tmp.getBo_content();
+	    	  
+	    	  if(source == null) {
+	    		  tmp.setThumbnail(thumbnail);
+	    		  continue;
+	    	  }
+	    	  
+	    	  Document dom = Jsoup.parse(source);  // dom 트리 구조 생성
+	    	  Elements imgs = dom.getElementsByTag("img");
+	    	  if(!imgs.isEmpty()) {
+	    		  // 썸네일로 보여줄 사진이 없는 경우 하나를 생성해줘야함.
+	    		  // src 에 들어가있는 주소값을 뽑아와야한다.
+	    		  Element img = imgs.get(0); // 첫번째 사진을 썸네일로
+	    		  thumbnail = img.attr("src");
+	    	  }
+	    	  tmp.setThumbnail(thumbnail);
 	            
 	      req.setAttribute("pagingVO", pagingVO);
 	      
-	      return "board/boardList";
 	   }
-	}
+	      return "board/boardList";
+	 }
+	 
+}

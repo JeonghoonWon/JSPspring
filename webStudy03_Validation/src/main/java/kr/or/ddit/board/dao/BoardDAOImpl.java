@@ -11,7 +11,7 @@ import kr.or.ddit.vo.PagingVO;
 
 public class BoardDAOImpl implements IBoardDAO {
 		private static BoardDAOImpl self;
-		private BoardDAOImpl() {}
+		public BoardDAOImpl() {}
 		public static BoardDAOImpl getInstance() {
 			if(self==null) self = new BoardDAOImpl();
 			return self;
@@ -70,9 +70,10 @@ public class BoardDAOImpl implements IBoardDAO {
 //		}
 
 	@Override
-	public int deleteBoard(BoardVO search) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int deleteBoard(BoardVO search, SqlSession session) {
+		
+		return session.delete("kr.or.ddit.board.dao.IBoardDAO.deleteBoard", search);
+		
 	}
 
 }
