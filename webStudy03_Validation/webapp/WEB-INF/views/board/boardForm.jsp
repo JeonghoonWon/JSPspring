@@ -8,6 +8,15 @@
 <title>Insert title here</title>
 <jsp:include page="/includee/preScript.jsp" />
 <script type="text/javascript" src="${cPath }/js/ckeditor/ckeditor.js"></script>
+
+<c:if test="${not empty message }">
+	<script type="text/javascript">
+		alert("${message}");
+	</script>
+	<c:remove var="message" scope="session"/>
+</c:if>
+
+
 <!-- post를 통해 만들어진 바디를 part로 나눠서 보내겠다는 뜻
  / 아무런 데이터를 보내지 않아도 데이터는 보내진다. -->
 </head>
@@ -24,6 +33,7 @@
 							<input class="form-control col-9 mr-3" type="text" name="bo_title"
 								required value="${board.bo_title }" />
 							<div class="form-check col-2">
+								<!-- 비밀글 선택  -->
 								<input class="form-check-input" type="checkbox" id="bo_sec"
 									name="bo_sec" value="Y" ${board.bo_sec eq 'Y' ? 'checked':'' } />
 								<label class="form-check-label" for="bo_sec"> 비밀글 </label>
@@ -95,11 +105,8 @@
 		</table>
 	</form>
 	<script type="text/javascript">
-		CKEDITOR
-				.replace(
-						"bo_content",
-						{
-							filebrowserImageUploadUrl : '${cPath}/board/boardImage.do?type=Images'
+		CKEDITOR.replace("bo_content",{
+				filebrowserImageUploadUrl : '${cPath}/board/boardImage.do?type=Images'
 						});
 		$(".fileArea").on("click", ".plusBtn", function() {
 			let source = $(this).parents("p:first");

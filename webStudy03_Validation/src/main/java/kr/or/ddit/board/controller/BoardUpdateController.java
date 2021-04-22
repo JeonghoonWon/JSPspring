@@ -46,7 +46,7 @@ public class BoardUpdateController {
 		// 요청에 board setting.
 		req.setAttribute("board", board);
 		
-		String message = null;
+
 		
 		// 수정 폼으로 전달.
 		return "board/boardForm";
@@ -56,7 +56,7 @@ public class BoardUpdateController {
 	public String doPost(@ModelAttribute("board") BoardVO board,
 			@RequestPart(value = "bo_files", required = false) MultipartFile[] bo_files, HttpServletRequest req) {
 
-
+		// 신규 첨부파일에 대한 처리
 		if (bo_files != null) {
 			List<AttatchVO> attatchList = new ArrayList<>();
 			for (MultipartFile file : bo_files) {
@@ -73,7 +73,8 @@ public class BoardUpdateController {
 		req.setAttribute("errors", errors);
 
 		// req의 scope 를 사용해서 class를 담아오고 그걸 class 로 받아서 동적으로 받아준다.
-	
+		
+		//
 		boolean valid = new CommonValidator<BoardVO>().validate(board, errors,UpdateGroup.class);
 		String view = null;
 		String message = null;

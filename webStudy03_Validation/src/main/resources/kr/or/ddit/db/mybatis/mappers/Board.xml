@@ -169,18 +169,19 @@
 				,BO_SEC 		= #{bo_sec,jdbcType=CHAR}    
 				</if>    
 		WHERE BO_NO = #{bo_no,jdbcType=NUMERIC}
+		AND BO_PASS = #{bo_pass,jdbcType=VARCHAR}
 		      
    </update>
    
    <delete id="deleteBoard" parameterType="BoardVO" >
      <!-- MERGE : 병합  -->
      
-<!-- SELECT -- SELECT 안에 SELECT 이 들어가면 스칼라 쿼리 -->
-<!-- FROM  -- FROM 안에 SELECT 이 들어가면 인라인뷰 -->
-<!-- WHERE -- WHERE 안에 SELECT 이 들어가면 서브쿼리 -->
+<!-- SELECT SELECT 안에 SELECT 이 들어가면 스칼라 쿼리 -->
+<!-- FROM  FROM 안에 SELECT 이 들어가면 인라인뷰 -->
+<!-- WHERE WHERE 안에 SELECT 이 들어가면 서브쿼리 -->
 
-<!-- --백터 데이터 : 방향과 사이즈를 가지고있다. SELECT 절에선 조회 될 수 없다. -->
-<!-- -- 스칼라 쿼리  : 쿼리의 결과가  레코드가 하나, 조회되는 값도 하나  -->
+<!--백터 데이터 : 방향과 사이즈를 가지고있다. SELECT 절에선 조회 될 수 없다. -->
+<!--스칼라 쿼리  : 쿼리의 결과가  레코드가 하나, 조회되는 값도 하나  -->
      MERGE INTO BOARD C
 		USING (
 		        SELECT BO_NO, (

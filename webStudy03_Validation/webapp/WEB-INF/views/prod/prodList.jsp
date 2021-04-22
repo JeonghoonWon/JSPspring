@@ -25,9 +25,12 @@
 				${buyer.buyer_name }
 			</option>
 		</c:forEach>
-		</select> <input type="text" name="prod_name" /> <input type="text"
-			name="page" /> <input type="submit" value="검색" /> <input
-			type="button" value="신규등록" id="newBtn" />
+		</select>
+		
+		<input type="text" name="prod_name" /> 
+		<input type="text" name="page" /> 
+		<input type="submit" value="검색" />
+		<input type="button" value="신규등록" id="newBtn" />
 
 	</form>
 

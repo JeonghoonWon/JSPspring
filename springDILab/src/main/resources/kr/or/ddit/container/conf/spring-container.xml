@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+		default-lazy-init="default"
+		default-init-method="init"
+		default-destroy-method="destroy"
+	>
+	<!-- beans 의 옵션을 변경해서 bean 들의   default-lazy-init="true" 를 변경할 수 있다. 순서를 조절 할 수 있는것. 하지만 정확히 조절 할 수는 없다.-->
+
+<!-- 스키마 정보 : beans, c, p  -->
+
+<!-- 등록  -->
+<!-- convention over configration  -->
+	<!--<bean lazy-init="true" : 천천히 생성. 주입이 있을때 생성되는것. but 주입이 없으면 생성도 되지않는다.  -->
+	<!-- depends-on ="daoOracle" :  depends-on 빈들간의 생성 시기를 직접적으로 관리학 ㅣ위해서. 그런데 서로가 의존 한다면 문제가 생긴다.(순환고리 생성) -->
+	<bean  depends-on ="daoOracle" id="daoMySql" class="kr.or.ddit.exemple.dao.ExampleDAO_MySql"/>	
+	
+	<bean  id ="daoOracle" class="kr.or.ddit.exemple.dao.ExampleDAO_Oracle" />
+
+<!-- 의존관계 형성 -->
+<!--   -->
+	<bean id ="service1" 
+	class = "kr.or.ddit.exemple.service.ExampleServiceImpl"
+	c:dao-ref="daoMySql" 
+	p:dao-ref="daoOracle"
+	> 
+	
+	<!-- 두가지 이상의 dao 를 주입하게되면 생성자 주입이 실행된다.  -->
+	<!-- c:dao-ref : 좋은 기능인데 버전을 탄다. 2.x 는 사용 불가 -->
+<!-- 		<constructor-arg name ="dao" ref="daoMySql" /> -->
+	<!--setter 주입을 해보자(optional 일때 사용)  -->
+	<!-- spring 은 java bean 규약에 따라 움직인다. ex  -->
+		<!-- 전역변수를 아무리 써도 적용되지않는다.   -->
+		<!--아래   <property name="dao"> 에서의 dao 이름은 ExampleServiceImpl 에서의  
+		public void setDao(IExampleDAO dao) setDao 이름에서 자바빈규약에 따라 set이 사라지고 소문자로 적용된 이름-->
+<!-- 		<property name="dao" ref="daoMySql"></property> -->
+
+	</bean>
+	
+	<bean id ="service2" class="kr.or.ddit.exemple.service.ExampleServiceImpl" 
+		scope="prototype" 
+	/>
+	<!--scope="prototype"  : 객체의 생성 시점이 뒤로 밀린다. 미리 만들어둘 필요가 없다. -->
+</beans>

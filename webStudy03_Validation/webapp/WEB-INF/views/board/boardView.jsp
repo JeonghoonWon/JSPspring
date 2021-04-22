@@ -115,7 +115,8 @@
 	</table>
 
 
-
+		
+		<!-- 삭제시 post 방식을 이용 form 사용. modal 에서 입력 받는 bo_pass와 board가 가지고 있는 bo_no 넘겨준다. -->
 		<form id="deleteForm" action="${cPath }/board/boardDelete.do"
 			method="post">
 			<input type="text" name="bo_pass" /> 
@@ -133,12 +134,17 @@
 			if (url)
 				location.href = url;
 		});
-
+		
+		/*  스크립트 사용, deleteForm을 아이디로 갖는 form 을 let 으로 변수 선언. */
 		let deleteForm = $("#deleteForm");
+		// 함수 실행, deleteBtn 버튼을 클릭하면, 
 		$("#deleteBtn").on("click", function() {
+			// passModal을 아이디로 가진 곳에서 name이 bo_pass인 input을 찾고 거기서의 벨류 값을 password 에 넣겠다.
 			let password = $("#passModal").find("[name=bo_pass]").val();
-
+			
+			// 변수선언한 deleteForm에서의 bo_pass 의 벨류값에 password 를 넣어준다.
 			deleteForm.find("[name='bo_pass']").val(password);
+			// deleteForm submit 해준다.
 			deleteForm.submit();
 
 			// 입력 되는 password 와 bo_pass 가 같을 경우 

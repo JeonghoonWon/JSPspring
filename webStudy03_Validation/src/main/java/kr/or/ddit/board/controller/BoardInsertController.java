@@ -45,9 +45,8 @@ public class BoardInsertController {
 	public String noticeInsert(
 						@ModelAttribute("board") BoardVO board
 						, HttpServletRequest req) {
-		return insert(board,null,req);
-		
-		
+		req.setAttribute("groupHint", NoticeInsertGroup.class);
+		return insert(board, null, req);
 	}
 	
 	
@@ -59,17 +58,13 @@ public class BoardInsertController {
 		board.setBo_type("BOARD");
 		board.setBo_parent(parent); // parent 값을 넣어준다.
 		return "board/boardForm";
-		
 	}
-
-	
 	
 	@RequestMapping(value = "/board/boardInsert.do", method = RequestMethod.POST)
 	public String insert(@ModelAttribute("board")BoardVO board
 						,@RequestPart(value="bo_files",required=false) MultipartFile[] bo_files
 						,HttpServletRequest req) {
-			req.setAttribute("groupHint", NoticeInsertGroup.class);
-		
+
 		if(bo_files!=null) {
 			List<AttatchVO> attatchList = new ArrayList<>();
 			for(MultipartFile file : bo_files) {
