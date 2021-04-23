@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd"
+		default-lazy-init="true"
+		>
+
+<!--  exmaple package 내에 계층구조를 사용. -->
+<!--  콘솔 출력 해보기  -->
+<!--  자동 으로 처리 되도록  -->
+<!--  조건 , example doa 의 구현체는 모두 등록 해라. -->
+	
+<!-- 	<context:annotation-config /> -->
+	<context:component-scan base-package="kr.or.ddit.exemple" use-default-filters="false">
+<!-- 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/> -->
+<!-- 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/> -->
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+</beans>

@@ -34,7 +34,11 @@
            </exclusion>
         </exclusions>
      </dependency>
-     
+     <dependency>
+      		<groupId>javax.inject</groupId>
+      		<artifactId>javax.inject</artifactId>
+      		<version>1</version>
+     </dependency>
      <dependency>
          <groupId>org.apache.logging.log4j</groupId>
          <artifactId>log4j-slf4j-impl</artifactId>
@@ -70,6 +74,7 @@
 		    <version>1.18.20</version>
 		    <scope>provided</scope>
 		</dependency>
+      	
   </dependencies>
 </project>
 

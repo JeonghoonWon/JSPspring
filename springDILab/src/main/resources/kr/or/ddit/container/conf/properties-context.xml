@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	
+	<!--id 가 없다.  이미 존재하는 properties 를 사용한다. -->
+	<!-- 시스템에있는 properties 와 내가 생성한 properties 가 중복 되면 충돌되서 뭐가 출력 될 지 모른다. 그래서 내가 입력하는 프로퍼티스에 프리픽스를 입력한다. ex)maindb. -->
+	<!-- 프로퍼티 정보를 읽어서 Property source 내에서 관리함.
+	프로퍼티 정보에 접근할때는 ${프로퍼티명} 형태의 placeholder 를 사용함. -->
+	<context:property-placeholder location="classpath:kr/or/ddit/dbinfo.properties"/>
+	
+	<!-- ${maindb.driverClasName} : property 명이 된다. -->
+	<bean id="infoVO3" class="kr.or.ddit.container.collection.DBInfoVO" 
+		p:driverClassName="${maindb.driverClassName}"
+		p:url="${maindb.url}"
+		p:user="${maindb.user}"
+		p:password="${maindb.password}"
+		p:maxWait="${maindb.maxWait}"
+	
+	/>
+
+
+
+	<util:properties id="dbInfo" location="classpath:kr/or/ddit/dbinfo.properties"> 
+		<!-- 기존 dbinfo.properties 가 가지고있는 properties 8 개에서 prop newValue 를 추가해서 총 9개 . property 를 추가할 수 있는 구조  -->
+		<prop key="newProp">newValue</prop>
+	</util:properties> 
+	
+	
+		<!-- 값 전부가 아닌 하나만 가져오려면  SpEL 사용할 수 있다. #{} -->
+		<!--  여기서의 EL도 연산자 사용 가능. longtype dmf  -->
+		<!-- 	p:maxWait="#{dbInfo.maxWait * 2}"  : 문자열 연산을 해버린것.  -->
+		<!-- 반노테이션 보다 연산배열구조가 코드에 안정성이 뛰어남.????  -->
+	<bean id ="infoVO" class="kr.or.ddit.container.collection.DBInfoVO" 
+		p:driverClassName="#{dbInfo['maindb.driverClassName']}" 
+		p:url="#{dbInfo['maindb.url']}"
+		p:user="#{dbInfo['maindb.user']}"
+		p:password="#{dbInfo['maindb.password']}"
+		p:maxWait="#{dbInfo['maindb.maxWait'] * 2}"  
+	/>
+	<!-- 위에 있는걸 복사하는것.  -->
+<!-- 	springEL(spEL)은 jsp EL 과 사용법이 유사함. -->
+<!-- 	. 표기법이나 [] 표기 모두 사용 가능. -->
+<!-- 	+,* : 두 연ㅅ나자는 문자열 concat 연산 기능까지 가짐. -->
+	
+	<bean id="infoVO2" class ="kr.or.ddit.container.collection.DBInfoVO" 
+		c:driverClassName="#{infoVO.driverClassName}"
+		c:url="#{infoVO.url}"
+		c:user="#{infoVO.user + 'abc'}"
+		c:password="#{infoVO.password * 2}"
+		c:maxWait="#{infoVO.maxWait * 2}"
+	/>
+</beans>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- 스프링이 지원하는 어노테이션을 사용할 수 있다. -->
+	<context:annotation-config /> <!-- component-scan 이 없다면 annotation-config 필요  --><!-- @Autowired 를 통해 의존관계 형성 가능  -->
+	
+	<!--base-package 아래에 있는 계층 구조를 모두 살펴본다. -->
+	<!-- 코드어시스턴트 받아서 사용 가능  -->
+	<!-- 빈으로 등록되는 어노테이션  -->
+<!-- 	@Conpoment : 범용 빈을 등록
+	@Repository : persistence layer 빈
+	@Service : business logic layer 빈
+	@Controller : controller layer 
+	@RestController : controller layer (spring 4.x) 
+	@Configuration 
+	@ControllerAdvice : controller layer (spring 4.x)  -->
+	<!-- auto wiring 어노테이션 -->
+<!-- 		@AutoWired -->
+<!-- 		@Inject : type 을 기준으로 search 한 후 주입(injection). -->
+<!-- 		@Resource : 빈 검색의 기준을 명시 할 수 있다.  -->
+<!-- 		이 3 가지를 사용하면 객체간 의존성을 정립 할 수 있다. -->
+<!-- 		@Required : 필수 주입 명시 , setter injection -->
+	<context:component-scan base-package="kr.or.ddit.container.auto"></context:component-scan>
+	
+</beans>

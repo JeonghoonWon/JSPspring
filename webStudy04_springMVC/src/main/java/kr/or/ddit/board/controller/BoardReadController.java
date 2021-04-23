@@ -1,0 +1,176 @@
+package kr.or.ddit.board.controller;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import kr.or.ddit.board.service.BoardServiceImpl;
+import kr.or.ddit.board.service.IBoardService;
+import kr.or.ddit.vo.BoardVO;
+import kr.or.ddit.vo.PagingVO;
+
+
+@Controller
+public class BoardReadController {
+	
+	public static final String BOARDAUTH = "board.authenticated";
+	private IBoardService service = BoardServiceImpl.getInstance();
+	
+	@RequestMapping(value="/board/authenticate.do", method=RequestMethod.POST)
+	public String boardAuth(
+			@RequestParam("bo_no") int bo_no
+			, @RequestParam("bo_pass") String bo_pass 
+			, HttpSession session
+			// 처음부터 BoardVO search 를 사용하게되면 인증처리가 어렵기 때문에 따로따로 받아서 검증 처리 함. 꼭 이게 답은 아니다.
+			) {
+		
+		BoardVO search = new BoardVO();
+		search.setBo_no(bo_no);
+		search.setBo_pass(bo_pass);		
+		String view = null;
+		if(service.boardAuthenticate(search)) {
+			session.setAttribute(BOARDAUTH, search); // session scope 에 BOARDAUTH 가 있는지없는지에따라 확인가능
+			// 더이상 bo_no, bo_pass를 더이상 사용할 필요가 없다. 그리고 인증은 redirect 사용한다.
+			view = "redirect:/board/boardView.do?what="+bo_no;
+		}else {
+			session.setAttribute("message", "비밀번호 오류");
+			view = "redirect:/board/boardList.do";
+		}
+		
+		return view;
+	}
+	
+	@RequestMapping("/board/boardView.do")
+	public String viewForAjax(
+				@RequestParam("what") int bo_no
+				,HttpServletRequest req
+				,HttpServletResponse resp
+				, HttpSession session
+		) throws IOException {
+		String accept = req.getHeader("Accept");
+		
+		BoardVO search = new BoardVO();
+		req.setAttribute("search", search);
+		search.setBo_no(bo_no);
+		BoardVO board = service.retrieveBoard(search);
+	
+		boolean valid = true;
+		if("Y".equals(board.getBo_sec())) {
+			// 여기까지 오는 과정에서 인증을 거쳤는지 확인
+			// 인증을 거쳤다면 그 인증 결과가 어디에 저장되어있는지 확인.
+			BoardVO authenticated = 
+					(BoardVO) session.getAttribute(BOARDAUTH);
+			
+			if(authenticated==null || authenticated.getBo_no() != bo_no) {
+				valid = false;
+			}
+						
+		}
+		String view = null;
+		if(valid) {
+			// 비밀글이 아니고 인증을 거친 경우 이 if 문을 돈다.
+			if(accept.contains("plain")) {
+				resp.setContentType("text/plain;charset=UTF-8");
+				try(
+						PrintWriter out = resp.getWriter();	
+						){
+					out.println(board.getBo_content());
+				}
+			}else {
+				req.setAttribute("board", board);
+				view = "board/boardView";
+			}
+			
+		}else {
+			//비밀글인데 인증을 거치지 않은 경우
+			view = "board/passwordForm";
+			
+		}// if(valid) end
+		// session에 남아있는 인증을 지워줘야한다.
+		session.removeAttribute(BOARDAUTH);
+		
+		return view;
+	}
+	@RequestMapping("/board/noticeList.do")
+	public String noticeList(
+				@RequestParam(value="searchType", required=false) String searchType
+				, @RequestParam(value="searchWord", required=false) String searchWord
+				, @RequestParam(value="page", required=false, defaultValue="1") int currentPage
+			    , @RequestParam(value="minDate", required=false) String minDate
+			    , @RequestParam(value="maxDate", required=false) String maxDate
+			    , HttpServletRequest req) throws ServletException, IOException {
+		searchType = "type";
+		searchWord = "NOTICE";
+		return list(currentPage, searchType, searchWord, minDate, maxDate, req);
+	}
+	
+
+		
+	 @RequestMapping("/board/boardList.do")
+	   public String list(
+	      @RequestParam(value="page", required=false, defaultValue="1") int currentPage,
+	      @RequestParam(value="searchType", required=false) String searchType,
+	      @RequestParam(value="searchWord", required=false) String searchWord,
+	      @RequestParam(value="minDate", required=false) String minDate,
+	      @RequestParam(value="maxDate", required=false) String maxDate,
+	      HttpServletRequest req) throws ServletException, IOException{
+	      
+	      PagingVO<BoardVO> pagingVO = new PagingVO<>();
+	      pagingVO.setCurrentPage(currentPage);
+	      
+	      //검색조건
+	      Map<String, Object> searchMap = new HashMap<>();
+	      searchMap.put("searchType", searchType);
+	      searchMap.put("searchWord", searchWord);
+	      searchMap.put("minDate", minDate);
+	      searchMap.put("maxDate", maxDate);
+	      pagingVO.setSearchMap(searchMap);
+	      
+	      int totalRecord = service.retrieveBoardCount(pagingVO);
+	      pagingVO.setTotalRecord(totalRecord);
+	      
+	      List<BoardVO> boardList = service.retrieveBoardList(pagingVO);
+	      pagingVO.setDataList(boardList);
+	      
+	      for(BoardVO tmp : boardList) {
+	    	  String thumbnail = req.getContextPath() + "/images/Coca-Cola-logo.png";
+	    	  String source = tmp.getBo_content();
+	    	  
+	    	  if(source == null) {
+	    		  tmp.setThumbnail(thumbnail);
+	    		  continue;
+	    	  }
+	    	  
+	    	  Document dom = Jsoup.parse(source);  // dom 트리 구조 생성
+	    	  Elements imgs = dom.getElementsByTag("img");
+	    	  if(!imgs.isEmpty()) {
+	    		  // 썸네일로 보여줄 사진이 없는 경우 하나를 생성해줘야함.
+	    		  // src 에 들어가있는 주소값을 뽑아와야한다.
+	    		  Element img = imgs.get(0); // 첫번째 사진을 썸네일로
+	    		  thumbnail = img.attr("src");
+	    	  }
+	    	  tmp.setThumbnail(thumbnail);
+	            
+	      req.setAttribute("pagingVO", pagingVO);
+	      
+	   }
+	      return "board/boardList";
+	 }
+	 
+}

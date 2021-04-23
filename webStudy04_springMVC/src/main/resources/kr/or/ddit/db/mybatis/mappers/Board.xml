@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.board.dao.IBoardDAO">
+   <sql id="searchFrag">
+      <trim prefix="WHERE" prefixOverrides="AND" suffixOverrides="OR"> 
+         BO_SORT = 1 OR 1 = 1
+         <if test="searchMap!=null and @org.apache.commons.lang3.StringUtils@isNotBlank(searchMap.searchWord)">
+            <trim prefix="AND (" suffix=")">
+               <choose>
+                  <when test="searchMap.searchType eq 'title'">
+                     INSTR(BO_TITLE, #{searchMap.searchWord}) > 0
+                  </when>
+                  <when test="searchMap.searchType eq 'writer'">
+                     INSTR(BO_WRITER, #{searchMap.searchWord}) > 0
+                  </when>
+                  <when test="searchMap.searchType eq 'content'">
+                     INSTR(BO_CONTENT, #{searchMap.searchWord}) > 0
+                  </when>
+                  <when test="searchMap.searchType eq 'type'">
+                     BO_TYPE = #{searchMap.searchWord}
+                  </when>
+                  <otherwise>
+                     INSTR(BO_TITLE, #{searchMap.searchWord}) > 0
+                     OR 
+                     INSTR(BO_WRITER, #{searchMap.searchWord}) > 0
+                     OR
+                     INSTR(BO_CONTENT, #{searchMap.searchWord}) > 0
+                     OR
+                     BO_TYPE = #{searchMap.searchWord}
+                  </otherwise>
+               </choose>
+            </trim>
+         </if>
+         <trim prefix="AND (" suffix=")" prefixOverrides="AND">
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchMap.minDate)">
+               AND BO_DATE >= TO_DATE(#{searchMap.minDate}, 'YYYY-MM-DD') 
+            </if>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchMap.maxDate)">
+               <![CDATA[
+               AND BO_DATE <= TO_DATE(#{searchMap.maxDate}, 'YYYY-MM-DD')
+               ]]> 
+            </if>
+         </trim>   
+      </trim>
+   </sql>
+   
+   <select id="selectBoardList" resultType="BoardVO" parameterType="PagingVO">
+      SELECT B.*
+      FROM(
+          SELECT A.*, ROWNUM-3 RNUM
+          FROM(
+              SELECT BO_SORT, BO_TYPE, BO_NO
+              , LEVEL
+              <![CDATA[
+              , LPAD('   RE:', 12*(LEVEL-1), '&nbsp;')|| DECODE(BO_SEC, 'Y', '비밀글임', BO_TITLE) BO_TITLE
+              ]]>
+              , BO_WRITER
+              , BO_HIT, BO_REC
+              , TO_CHAR(BO_DATE, 'YYYY-MM-DD HH:MI') BO_DATE
+              , BO_SEC
+              , BO_CONTENT
+              FROM BOARDVIEW
+              <include refid="searchFrag"/>
+              START WITH BO_PARENT IS NULL
+              CONNECT BY PRIOR BO_NO = BO_PARENT
+              ORDER SIBLINGS BY BO_SORT ASC, BO_DATE DESC
+          ) A
+      ) B
+       WHERE BO_SORT = 1 OR RNUM BETWEEN #{startRow} AND #{endRow}
+   </select>
+   
+   <select id="selectBoardCount" resultType="int" parameterType="PagingVO">
+      SELECT COUNT(*)
+      FROM BOARDVIEW
+      <include refid="searchFrag"/>
+   </select>
+   
+   <resultMap type="BoardVO" id="boardMap" autoMapping="true">
+   <!-- 조인을 할때 PK에 대한 중복을 제거하기 위해서는 id를 사용하는 것이 좋음 -->
+      <id property="bo_no" column="BONO"/>
+      <collection property="attatchList" ofType="AttatchVO" autoMapping="true">
+         <id property="att_no" column="ATT_NO"/>
+      </collection>
+   </resultMap>
+   <select id="selectBoard" parameterType="BoardVO" resultMap="boardMap">
+      SELECT
+          BO_SORT, BO_TYPE, A.BO_NO BONO
+          , BO_TITLE, BO_WRITER, BO_PASS
+          , BO_CONTENT
+          , TO_CHAR(BO_DATE, 'YYYY-MM-DD HH:MI') BO_DATE
+          , BO_HIT, BO_REC, BO_REP
+          , BO_SEC 
+          , BO_PARENT
+          , BO_DELETE
+          , B.ATT_NO, B.ATT_FILENAME
+          , B.ATT_CONTENTTYPE
+          
+      FROM BOARDVIEW A LEFT OUTER JOIN ATTATCH B 
+         ON(A.BO_NO = B.BO_NO)
+      WHERE A.BO_NO = #{bo_no}
+   </select>
+   <!-- b가 가지고있는 b.bo_no때문에 attatchList가 만들어진다. => 첨부파일이 없는데도 불구하고 attatchList의 사이즈가 1이 된다.
+   => alias를 주어서 bo_no를 통해서 연결되지 않도록 한다. -->
+   
+   <insert id="insertBoard" parameterType="BoardVO">
+      <selectKey resultType="int" keyProperty="bo_no" order="BEFORE">
+         SELECT BO_SEQ.NEXTVAL
+         FROM DUAL
+      </selectKey>
+      INSERT INTO BOARD
+     <!--  <choose>
+      	<when test = "bo_type eq 'BOARD'">
+      	BOARD
+      	</when>
+      	<when test = "bo_type eq 'NOTICE'">
+      	NOTICE
+      	</when>
+      </choose> -->
+      
+      (
+      <!-- #{} : 인라인파라미터 / ${bo_type} ${} : 리플레이스텍스트 (대체구문)   -->
+      <!-- ${} 는 injection 공격에 취약하다. 입력 값을 choose , when 을 사용하는게 좋다.  -->
+      BO_NO 
+      ,BO_TITLE 
+          ,BO_CONTENT
+      <if test="bo_type eq 'BOARD'"> <!-- 보 타입이 보드인 경우 IF 문 돈다.  -->
+    	  ,BO_WRITER 
+    	  ,BO_PASS
+	      <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_sec)">
+	      , BO_SEC
+	      </if>
+	      <if test="bo_parent!=null and bo_parent gt 0">
+	      , BO_PARENT
+      	</if>
+       </if>
+      )VALUES(
+         #{bo_no}
+         ,#{bo_title, jdbcType=VARCHAR}
+	            ,#{bo_content, jdbcType=CLOB}
+	    	    <if test="bo_type eq 'BOARD'"> <!-- 보 타입이 보드인 경우 IF 문 돈다.  -->      
+				,#{bo_writer, jdbcType=VARCHAR}  
+				,#{bo_pass, jdbcType=VARCHAR}
+				<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_sec)">
+				, #{bo_sec, jdbcType=CHAR}
+				</if>
+				<if test="bo_parent!=null and bo_parent gt 0">
+				, #{bo_parent, jdbcType=NUMERIC}
+				</if>
+         </if>
+      )
+   </insert>
+   
+   <update id="updateBoard" parameterType="BoardVO">
+   		   		
+		UPDATE  
+		<choose>
+      	<when test = "bo_type eq 'BOARD'">
+      	BOARD
+      	</when>
+      	<when test = "bo_type eq 'NOTICE'">
+      	NOTICE
+      	</when>
+      </choose>
+		    SET
+		        BO_TITLE 		= #{bo_title,jdbcType=VARCHAR}
+				,BO_WRITER 		= #{bo_writer,jdbcType=VARCHAR}   
+				,BO_CONTENT 	= #{bo_content,jdbcType=CLOB} 
+					<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_sec)">
+				,BO_SEC 		= #{bo_sec,jdbcType=CHAR}    
+				</if>    
+		WHERE BO_NO = #{bo_no,jdbcType=NUMERIC}
+		AND BO_PASS = #{bo_pass,jdbcType=VARCHAR}
+		      
+   </update>
+   
+   <delete id="deleteBoard" parameterType="BoardVO" >
+     <!-- MERGE : 병합  -->
+     
+<!-- SELECT SELECT 안에 SELECT 이 들어가면 스칼라 쿼리 -->
+<!-- FROM  FROM 안에 SELECT 이 들어가면 인라인뷰 -->
+<!-- WHERE WHERE 안에 SELECT 이 들어가면 서브쿼리 -->
+
+<!--백터 데이터 : 방향과 사이즈를 가지고있다. SELECT 절에선 조회 될 수 없다. -->
+<!--스칼라 쿼리  : 쿼리의 결과가  레코드가 하나, 조회되는 값도 하나  -->
+     MERGE INTO BOARD C
+		USING (
+		        SELECT BO_NO, (
+		            SELECT COUNT(*) -1 -- COUNT(*) 
+		            FROM BOARD B
+		            START WITH BO_NO = A.BO_NO
+		            CONNECT BY PRIOR BO_NO = BO_PARENT
+		        ) CNT
+		        FROM BOARD A
+		) D
+		ON (C.BO_NO = #{bo_no} AND C.BO_NO = D.BO_NO) 
+		WHEN MATCHED THEN <!--조건에 맞는지 확인  MATCHED : 그 조건이 맞으면 , THEN  : 조건이 맞은경우 실행하고 싶은 쿼리문 -->
+		    UPDATE SET BO_TITLE = '삭제된 글의 제목'
+		                , BO_CONTENT = '삭제된 글의 내용'
+		                , BO_DELETE = 'Y'
+		   			 DELETE WHERE D.CNT = 0
+     
+     
+     <!-- CASECADE를 지정해주지않았기 때문에 아래 SQL 구문은 사용 할 수 없다.  --> 
+   <!--    DELETE FROM BOARD
+      WHERE BO_NO IN (
+	      	SELECT BO_NO
+	      	FROM BOARD
+	      	START WITH BO_NO = #{bo_no}
+	      	CONNECT BY PRIOR BO_NO = BO_PARENT 나부터 내 자식들의 글 번호 찾음.
+      ) -->
+      
+      
+     <!--  UPDATE BOARD
+		SET
+		BO_TITLE = '삭제된 게시글 입니다.' 
+		, BO_CONTENT = ' 삭제된 게시글 입니다.'
+		WHERE BO_NO = #{bo_no,jdbcType=NUMERIC} AND BO_PASS= #{bo_pass, jdbcType=VARCHAR}
+    -->
+   </delete>
+   
+</mapper>

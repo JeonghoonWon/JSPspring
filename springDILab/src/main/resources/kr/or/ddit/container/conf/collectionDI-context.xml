@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+
+<!-- 스키마 종류 : beans, c, p, util, context  -->
+		<!-- c, p 를 사용하려면 collection 이 등록 되어있어야한다.  -->
+		
+		<!-- 재사용 가능한 엘리먼트 등록 -->
+		<bean class="java.util.LinkedList"></bean>
+		<util:list id="list" list-class="java.util.LinkedList"> <!-- 기본 타입은 arrayList / 바꾸고싶다면 list-class 로 타입 지정. -->
+			<value>value1</value>
+			<value>value2</value>
+		</util:list>
+		
+		<util:set id="set">
+			<value>value1</value>
+			<bean class="kr.or.ddit.container.various.VariousDIVO" />
+		</util:set>
+		
+		<util:map id="map">
+			<entry key="key1" value="123" value-type="java.lang.Integer" /> <!-- property editor 동작으로 문자123이 숫자 123이 됨  --> 
+			<entry key="today" value-ref="today" /> <!--value-ref : 직접 입력이 아닌 다른걸 코드 어시스턴트 받고 싶은경우 사용  -->
+		</util:map>
+		
+		<util:properties id = "props" location="">   <!-- properties는  비 휘발성 데이터를 관리 하기 위해 사용  -->
+			<prop key="propName" >
+						propValue <!-- 무조건 string 직접 값 설정해준다.  -->
+			</prop>
+		</util:properties>
+		
+		<bean id="array" class="kr.or.ddit.container.collection.StringArrayFactoryBean" />
+				
+		<!-- array 는 bean 으로 등록이 불가능 하다. 배열만들때 생성자 불가 배열의 타입을 미리 정해두는게 불가능하기 때문에
+				배열은생성자를 가지고있지않다. 
+				그래도 사용하고싶다면 factory bean 을 쓰면 된다! -->
+		
+		<bean id="today" class="java.util.Date"></bean>
+	<bean id="cvo1" class="kr.or.ddit.container.collection.CollectionDIVO" 
+		c:list-ref="list"
+		c:set-ref="set"
+		c:map-ref="map"
+		c:props-ref="props"
+		c:array-ref="array"
+	>
+		
+
+<!-- 			<constructor-arg name="array"> -->
+<!-- 				<array> -->
+<!-- 					<value>value1</value> -->
+<!-- 					<value>value2</value> -->
+<!-- 				</array> -->
+<!-- 			</constructor-arg> -->
+			
+		
+			
+<!-- 			<constructor-arg name="set">
+				<set>
+					
+				</set>
+			</constructor-arg> -->
+			
+		<!-- 	<constructor-arg name="map">
+				<map>
+					<entry key="key1" value="123" value-type="java.lang.Integer" /> property editor 동작으로 문자123이 숫자 123이 됨  
+					<entry key="today" value-ref="today" /> value-ref : 직접 입력이 아닌 다른걸 코드 어시스턴트 받고 싶은경우 사용 
+				</map>
+			</constructor-arg> -->
+			
+<!-- 			<constructor-arg name="props">
+				<props>
+					<prop key="propName" >
+						propValue 무조건 string 직접 값 설정해준다. 
+					</prop>
+				</props>
+			
+			
+			</constructor-arg> -->
+			
+	</bean>
+	
+	
+	
+	<bean id="cvo2" class="kr.or.ddit.container.collection.CollectionDIVO" 
+		p:list-ref="list"
+		p:set-ref="set"
+		p:map-ref="map"
+		p:props-ref="props"
+		p:array-ref="array"
+	>
+	
+			<!-- 	<property name="array">
+				<array>
+					<value>value1</value>
+					<value>value2</value>
+				</array>
+				</property>
+			
+			<property name="list">
+				<list>
+					<value>value1</value>
+					<value>value2</value>
+				</list>
+			</property>
+			
+			<property name="set">
+				<set>
+					<value>value1</value>
+					<bean class="kr.or.ddit.container.various.VariousDIVO" />
+				</set>
+			</property>
+			
+			<property name="map">
+				<map>
+					<entry key="key1" value="12345" value-type="java.lang.Integer" /> property editor 동작으로 문자123이 숫자 123이 됨  
+					<entry key="today" value-ref="today" /> value-ref : 직접 입력이 아닌 다른걸 코드 어시스턴트 받고 싶은경우 사용 
+				</map>
+			</property>
+			
+			<property name="props">
+				<props>
+					<prop key="propName" >
+						propValue 무조건 string 직접 값 설정해준다. 
+					</prop>
+				</props>
+			
+			
+			</property> -->
+		
+			
+	</bean>
+</beans>

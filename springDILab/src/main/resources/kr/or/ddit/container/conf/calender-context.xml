@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!-- 
+Calendar 를 빈으로 등록하고
+ 주입을 받아서,
+날짜를 포함한 현재 시간을 콘솔에 출력할것. 
+ -->
+ 
+ <!-- 팩토리 있어야하고 현재시간으로 나와야하니까 미리 만들지 않고 주입 될 때 객체 생성  -->
+ 	<bean id="now" class="kr.or.ddit.container.collection.CalendarFactoryBean" />
+ 	<bean id="today" class="java.util.Date" />
+ 
+</beans>
