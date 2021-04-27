@@ -20,6 +20,7 @@ import kr.or.ddit.mvc.annotation.resolvers.ModelAttribute;
 import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
 import kr.or.ddit.mvc.annotation.resolvers.RequestPart;
 import kr.or.ddit.mvc.filter.wrapper.MultipartFile;
+import kr.or.ddit.validator.BoardInsertGroup;
 import kr.or.ddit.validator.CommonValidator;
 import kr.or.ddit.validator.InsertGroup;
 import kr.or.ddit.validator.NoticeInsertGroup;
@@ -83,7 +84,7 @@ public class BoardInsertController {
 		// req의 scope 를 사용해서 class를 담아오고 그걸 class 로 받아서 동적으로 받아준다.
 		Class<?> groupHint = (Class<?>) req.getAttribute("groupHint");
 		if(groupHint == null) {
-			groupHint = BoardInsertController.class;
+			groupHint = BoardInsertGroup.class;
 		}
 		boolean valid = new CommonValidator<BoardVO>().validate(board, errors, groupHint);
 		String view = null;

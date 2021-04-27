@@ -27,7 +27,7 @@ import kr.or.ddit.vo.BuyerVO;
 
 @Controller
 public class BuyerUpdateController{
-	private IBuyerService service = new BuyerServiceImpl();
+	private IBuyerService service = BuyerServiceImpl.getInstance();
 	private IOthersDAO othersDAO = OthersDAOImpl.getInstance();
 	
 	private void addAttribute(HttpServletRequest req) {

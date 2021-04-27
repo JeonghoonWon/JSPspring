@@ -9,7 +9,7 @@ import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
 
 @Controller
 public class BuyerDeleteController{
-	private IBuyerService service = new BuyerServiceImpl();
+	private IBuyerService service = BuyerServiceImpl.getInstance();
 	
 	@RequestMapping("/buyer/buyerDelete.do")
 	public String Delete(

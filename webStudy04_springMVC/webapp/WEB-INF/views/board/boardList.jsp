@@ -51,7 +51,7 @@
 		</thead>
 
 		<tbody id="listBody">
-		<c:choose>
+	<c:choose>
 			<c:when test="${not empty pagingVO.dataList }">
 				<c:forEach items="${pagingVO.dataList }" var="board">
 					<tr>
@@ -94,12 +94,16 @@
 		         </tr>
       		</c:otherwise>
 		</c:choose>
+	
 	</tbody>
 
 		<tfoot>
 			<tr>
 				<td colspan="7" >
-					<form id="searchForm">
+				<!-- action 을 사용하지않으면 클라이언트가 가지고있는 주소를 사용하는데 검색에 실패할 경우 , 값이 두번 넘어가서 다음번 조회가 불가능해진다.
+					되도록이면 action 을 주는게 좋다. -->
+					<form id="searchForm" action="${cPath }/board/boardList.do" >
+					<!-- get, post 이외의 method 가 필요한 경우 form 의 method=post 로 정해두고, hidden , name="_method" value="delete/put/ 등으로 변경해서 넘겨준다. -->
 						<%--
 					SearchVO searchVO = pagingVO.getSimpleSearch();				
 				--%>
@@ -213,6 +217,7 @@
 		
 	</script>
 	
+<%-- 	<script type="text/javascript" src="${cPath }/js/board/boardList.js"></script> --%>
 	<jsp:include page="/includee/postScript.jsp" />
 
 </body>

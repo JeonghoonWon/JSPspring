@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	
+	<util:properties id="dbInfo" location="classpath:kr/or/ddit/db/dbinfo.properties" /> <!-- resource loader 실행  -->
+	
+	<!-- 반드시 아이디는 dataSource. =>누군가가 주입 시 사용하는 고정 아이디이기 때문에 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource"  
+		p:driverClassName="#{dbInfo.driverClassName}"
+		p:url="#{dbInfo.url}"
+		p:username="#{dbInfo.user}"
+		p:password="#{dbInfo.password}"
+		p:initialSize="#{dbInfo.initialSize}"
+		p:maxTotal="#{dbInfo.maxTotal}"
+		p:maxWaitMillis="#{dbInfo.maxWait}"
+		/>
+		<!-- 트렌젝션 매니져를 등록하고 데이터 소스를 받아온다./  -->
+		<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" 
+			p:dataSource-ref="dataSource"
+		/>
+		
+		<!-- sqlSessionFactory 생성  -->
+		<!-- *.xml 모든 xml 사용 -->
+		<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" 
+			p:dataSource-ref="dataSource"
+			p:mapperLocations="classpath:kr/or/ddit/db/mybatis/mappers/*.xml" 
+			p:typeAliasesPackage="kr.or.ddit.**.vo" 
+		/><!-- ** 와일드카드  -->
+		
+		<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" 
+			c:sqlSessionFactory-ref="sqlSessionFactory"
+		/>
+		<!-- 이 페이지 안에 있는 인터페이스 들 중 저 어노테이션을 가지고있는 인터페이스를 만나면 자동으로 구현체를 만들어주겠다는 뜻.  -->
+		<mybatis-spring:scan base-package="kr.or.ddit.**.dao" 
+			annotation="org.springframework.stereotype.Repository"
+		/>
+</beans>

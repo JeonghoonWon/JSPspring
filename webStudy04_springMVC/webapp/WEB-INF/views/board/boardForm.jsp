@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,7 +22,7 @@
  / 아무런 데이터를 보내지 않아도 데이터는 보내진다. -->
 </head>
 <body>
-	<form id ="boardForm" method="post" enctype="multipart/form-data">
+	<form:form modelAttribute="board" id ="boardForm" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="bo_no" value="${board.bo_no }" /> 
 		<input type="hidden" name="bo_type" value="${board.bo_type }"> 
 		<input type="hidden" name="bo_parent" value="${board.bo_parent }" />
@@ -31,14 +32,18 @@
 					<td>
 						<div class="input-group">
 							<input class="form-control col-9 mr-3" type="text" name="bo_title"
-								required value="${board.bo_title }" />
+								  value="${board.bo_title }" />
 							<div class="form-check col-2">
 								<!-- 비밀글 선택  -->
 								<input class="form-check-input" type="checkbox" id="bo_sec"
 									name="bo_sec" value="Y" ${board.bo_sec eq 'Y' ? 'checked':'' } />
 								<label class="form-check-label" for="bo_sec"> 비밀글 </label>
 							</div>
-							<span class="error">${errors.bo_title }</span>
+							<form:errors path="bo_title" element="span" cssClass="error" /> 
+							<!-- <span class="error">${errors.bo_title }</span> 과 동일
+							form:form 의 modelattribute를 지정해두었기때문에 , path에서 -->
+							
+							
 						</div>
 					</td>
 			</tr>
@@ -46,13 +51,17 @@
 				<tr>
 					<th>작성자</th>
 					<td><input class="form-control" type="text" name="bo_writer"
-						required value="${board.bo_writer }" /> <span class="error">${errors.bo_writer }</span>
+						  value="${board.bo_writer }" />
+						<form:errors path="bo_writer" element="span" cssClass="error"/> <!--  <span class="error">${errors.bo_writer }</span>  -->
+						
 					</td>
 				</tr>
 				<tr>
 					<th>비밀번호</th>
 					<td><input class="form-control" type="text" name="bo_pass"
-						required /> <span class="error">${errors.bo_pass }</span></td>
+						  />
+					<form:errors path="bo_pass" element="span" cssClass="error" /> 
+<%-- 					<span class="error">${errors.bo_pass }</span></td> --%>
 				</tr>
 						<!-- 기존 파일이 있는 경우   -->
 				<tr>
@@ -88,7 +97,9 @@
 
 				<td><textarea class="form-control" rows="5" cols="100"
 						name="bo_content" id="bo_content">${board.bo_content }</textarea>
-					<!-- id 값 : ckeditor 를 위해.  --> <span class="error">${errors.bo_content }</span>
+					<!-- id 값 : ckeditor 를 위해.  --> 
+					<form:errors path="bo_content" element="span" cssClass="error" /> 
+<%-- 					<span class="error">${errors.bo_content }</span> --%>
 				</td>
 			</tr>
 			<tr>
@@ -103,7 +114,7 @@
 				</td>
 			</tr>
 		</table>
-	</form>
+	</form:form>
 	<script type="text/javascript">
 		CKEDITOR.replace("bo_content",{
 				filebrowserImageUploadUrl : '${cPath}/board/boardImage.do?type=Images'

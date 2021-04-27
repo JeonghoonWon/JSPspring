@@ -5,52 +5,65 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kr.or.ddit.mvc.annotation.Controller;
-import kr.or.ddit.mvc.annotation.RequestMapping;
-import kr.or.ddit.mvc.annotation.resolvers.ModelAttribute;
-import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
 import kr.or.ddit.prod.dao.IOthersDAO;
-import kr.or.ddit.prod.dao.OthersDAOImpl;
 import kr.or.ddit.prod.service.IProdService;
-import kr.or.ddit.prod.service.ProdServiceImpl;
 import kr.or.ddit.vo.BuyerVO;
 import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.ProdVO;
 
-//@WebServlet("/prod/prodList.do")
+
 @Controller
 public class ProdReadController{
-
-	private IProdService service = ProdServiceImpl.getInstance();
-	private IOthersDAO othersDAO = OthersDAOImpl.getInstance();
+	@Inject
+	private IProdService service;
+	@Inject
+	private IOthersDAO othersDAO;
 	
-	private void addAttribute(HttpServletRequest req) {
+	private void addAttribute(Model model) {
 		List<Map<String, Object>> lprodList 
 			= othersDAO.selectLprodList();
 		List<BuyerVO> buyerList 
 			= othersDAO.selectBuyerList(null);
-		req.setAttribute("lprodList", lprodList);
-		req.setAttribute("buyerList", buyerList);
+		model.addAttribute("lprodList", lprodList);
+		model.addAttribute("buyerList", buyerList);
 	}
 	
 	@RequestMapping("/prod/prodList.do")
 	public String list(
-
 			 @ModelAttribute("detailSearch") ProdVO detailSearch 
 			,@RequestParam(value="page", required=false, defaultValue="1") int currentPage
-			,HttpServletRequest req
+			,Model model
 			,HttpServletResponse resp) throws ServletException, IOException {
-		addAttribute(req);
 		
-
+		addAttribute(model);
+		
+		PagingVO<ProdVO> pagingVO = list(detailSearch, currentPage);
+		
+		model.addAttribute("pagingVO",pagingVO);
+		
+		return "prod/prodList";
+	}
+	@RequestMapping(value="/prod/prodList.do", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public PagingVO<ProdVO> list(
+			@ModelAttribute("detailSearch") ProdVO detailSearch
+			, @RequestParam(value="page", required=false, defaultValue="1") int currentPage
+			){
 		PagingVO<ProdVO> pagingVO = new PagingVO<>();
 		pagingVO.setCurrentPage(currentPage);
 		pagingVO.setDetailSearch(detailSearch);
@@ -62,50 +75,15 @@ public class ProdReadController{
 				service.retrieveProdList(pagingVO);
 		pagingVO.setDataList(prodList);
 		
-		String accept = req.getHeader("Accept");
-		String view = null;
-		if(StringUtils.containsIgnoreCase(accept, "json")) {
-			resp.setContentType("application/json;charset=UTF-8");
-			ObjectMapper mapper = new ObjectMapper();
-			try(
-				PrintWriter out = resp.getWriter();	
-			){	// 이미 응답 데이터가 결정된 경우에도 null 값이 될 수 있음.
-				mapper.writeValue(out, pagingVO);
-			}
-			
-		}else {
-			req.setAttribute("pagingVO", pagingVO);
-			
-			view = "prod/prodList";
-			
-		}
-		return view;
-		
+		return pagingVO;		
 	}
 	
 	@RequestMapping("/prod/prodView.do")
-	public String view
-		(@RequestParam(value = "what", required=true, defaultValue="1") 
-		String prod_id, HttpServletRequest req) {
-
-		
+	public String view(
+			@RequestParam(value="what", required=true, defaultValue="1") String prod_id
+			, HttpServletRequest req){
 		ProdVO prod =  service.retrieveProd(prod_id);
-		// 로직에서 받은것을 스코프 사용
 		req.setAttribute("prod", prod);
-		
-		return "prod/prodView";
-		
-		
-	}// 하나의 객체 안에 유사한 핸들러를 함께 넣어서 사용할 수 있음.
+		return "prod/prodView";		
+	}
 }
-
-
-
-
-
-
-
-
-
-
-

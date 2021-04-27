@@ -5,19 +5,14 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.stereotype.Repository;
 
 import kr.or.ddit.db.mybatis.CustomSqlSessionFactoryBuilder;
 import kr.or.ddit.vo.BuyerVO;
 
+@Repository
 public class OthersDAOImpl implements IOthersDAO {
 
-	// 싱글톤 구조를 위한 생성자
-	private static OthersDAOImpl self;
-	private OthersDAOImpl() {}
-	public static OthersDAOImpl getInstance() {
-		if(self==null) self = new OthersDAOImpl();
-		return self;
-	}
 	// sessionFactory 받아오기
 	private SqlSessionFactory sessionFactory = 
 			CustomSqlSessionFactoryBuilder.getSessionFactory();

@@ -1,67 +1,56 @@
 package kr.or.ddit.member.controller;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.or.ddit.member.service.IMemberService;
-import kr.or.ddit.member.service.MemberServiceImpl;
-import kr.or.ddit.mvc.annotation.Controller;
-import kr.or.ddit.mvc.annotation.RequestMapping;
-import kr.or.ddit.mvc.annotation.resolvers.ModelAttribute;
-import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.SearchVO;
 
-//@WebServlet("/member/memberList.do")
 @Controller
-public class MemberListController {
-	private IMemberService service = new MemberServiceImpl();
+public class MemberListController{
+	@Inject
+	private IMemberService service;
 	
 	@RequestMapping("/member/memberView.do")
-	public String memberView(
-			@RequestParam("who") String mem_id
-			,HttpServletRequest req) {
-	
-	MemberVO member = service.retrieveMember(mem_id);
-	req.setAttribute("member", member);
-	return "member/mypage";
-}
-	
+	public String view(
+		@RequestParam("who") String who
+		, Model model
+	) {
+		MemberVO member = service.retrieveMember(who);
+		model.addAttribute("member", member);
+		return "member/mypage";
+	}
 	
 	@RequestMapping("/member/memberList.do")
 	public String memberList(
 			@ModelAttribute("searchVO") SearchVO searchVO
-			,@RequestParam(value="page", required=false, defaultValue="1") int currentPage
-			,HttpServletRequest req)  {
-
-		// 검색을 하는 사람도 있고 아닌 사람도 있기 때문에 검증을 할 필요가 없다.
-
+			, @RequestParam(value="page", required=false, defaultValue="1") int currentPage
+			, Model model){
 		
-		//속성을 전부 가지고 있게된다.
-		PagingVO<MemberVO> pagingVO = new PagingVO(7,2);
+		PagingVO<MemberVO> pagingVO = new PagingVO<>(7, 2);
 		pagingVO.setCurrentPage(currentPage);
 		// 검색 조건
-		pagingVO.setSimpleSearch(searchVO);	// 검색 조건을 먼저 담아준 후 페이징 처리
+		pagingVO.setSimpleSearch(searchVO);
 		
 		int totalRecord = service.retrieveMemberCount(pagingVO);
 		pagingVO.setTotalRecord(totalRecord);
 		
+		List<MemberVO> memberList = 
+				service.retrieveMemberList(pagingVO);
+		pagingVO.setDataList(memberList);
 		
-		List<MemberVO> memberList=
-					service.retrieveMemberList(pagingVO);
-		pagingVO.setDataList(memberList); 
-		
-		req.setAttribute("pagingVO", pagingVO);
+		model.addAttribute("pagingVO", pagingVO);
 		
 		return "member/memberList";
-			//req.getRequestDispatcher(view).forward(req, resp);
-	
 	}
 }
+

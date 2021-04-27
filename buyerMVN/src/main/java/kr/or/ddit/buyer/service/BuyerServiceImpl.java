@@ -9,6 +9,14 @@ import kr.or.ddit.vo.BuyerVO;
 import kr.or.ddit.vo.PagingVO;
 
 public class BuyerServiceImpl implements IBuyerService {
+	private static BuyerServiceImpl self;
+	private BuyerServiceImpl() {}
+	
+	public static BuyerServiceImpl getInstance() {
+		if(self==null) self = new BuyerServiceImpl();
+		return self;
+	}
+	
 	private IBuyerDAO dao = BuyerDAOImpl.getInstance();
 	
 	@Override

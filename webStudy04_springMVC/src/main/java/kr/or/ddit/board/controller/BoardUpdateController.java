@@ -1,40 +1,33 @@
 package kr.or.ddit.board.controller;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import javax.inject.Inject;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import kr.or.ddit.board.service.BoardServiceImpl;
 import kr.or.ddit.board.service.IBoardService;
 import kr.or.ddit.enumpkg.ServiceResult;
-import kr.or.ddit.mvc.annotation.Controller;
-import kr.or.ddit.mvc.annotation.RequestMapping;
-import kr.or.ddit.mvc.annotation.RequestMethod;
-import kr.or.ddit.mvc.annotation.resolvers.ModelAttribute;
-import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
-import kr.or.ddit.mvc.annotation.resolvers.RequestPart;
-import kr.or.ddit.mvc.filter.wrapper.MultipartFile;
 import kr.or.ddit.utils.RegexUtils;
-import kr.or.ddit.validator.CommonValidator;
-import kr.or.ddit.validator.NoticeInsertGroup;
 import kr.or.ddit.validator.UpdateGroup;
-import kr.or.ddit.vo.AttatchVO;
 import kr.or.ddit.vo.BoardVO;
 
 @Controller
 public class BoardUpdateController {
 	private String[] filteringTokens = new String[] { "말미잘", "해삼" };
-
-	private IBoardService service = BoardServiceImpl.getInstance();
+	
+	@Inject
+	private IBoardService service;
 
 
 	@RequestMapping("/board/boardUpdate.do")
-	public String updateBoard(@RequestParam("what") int bo_no, HttpServletRequest req) {
+	public String updateBoard(@RequestParam("what") int bo_no
+			,Model model) {
 
 		// 게시글 번호로 해당 글을 조회.
 		BoardVO search = new BoardVO();
@@ -44,7 +37,7 @@ public class BoardUpdateController {
 		BoardVO board = service.retrieveBoard(search);
 		
 		// 요청에 board setting.
-		req.setAttribute("board", board);
+		model.addAttribute("board", board);
 		
 
 		
@@ -53,33 +46,22 @@ public class BoardUpdateController {
 	}
 
 	@RequestMapping(value = "/board/boardUpdate.do", method = RequestMethod.POST)
-	public String doPost(@ModelAttribute("board") BoardVO board,
-			@RequestPart(value = "bo_files", required = false) MultipartFile[] bo_files, HttpServletRequest req) {
+	public String doPost(@Validated(UpdateGroup.class) @ModelAttribute("board") BoardVO board
+			, Errors errors
+			,Model model) {
 
-		// 신규 첨부파일에 대한 처리
-		if (bo_files != null) {
-			List<AttatchVO> attatchList = new ArrayList<>();
-			for (MultipartFile file : bo_files) {
-				if (file.isEmpty())
-					continue;
-				attatchList.add(new AttatchVO(file));
-			}
-			if (attatchList.size() > 0)
-				board.setAttatchList(attatchList);
-
-		}
-
-		Map<String, List<String>> errors = new LinkedHashMap<>(); // List 로 넣으면 하나의
-		req.setAttribute("errors", errors);
+		
+	
+		model.addAttribute("errors", errors);
 
 		// req의 scope 를 사용해서 class를 담아오고 그걸 class 로 받아서 동적으로 받아준다.
 		
 		//
-		boolean valid = new CommonValidator<BoardVO>().validate(board, errors,UpdateGroup.class);
+
 		String view = null;
 		String message = null;
 
-		if (valid) {
+		if (!errors.hasErrors()) {
 			// 비속어 필터링 적용
 			String replaceText = RegexUtils.filteringTokens(board.getBo_content(), 'ㅁ', filteringTokens);
 			board.setBo_content(replaceText);
@@ -103,7 +85,7 @@ public class BoardUpdateController {
 			view = "board/boardForm";
 		}
 
-		req.setAttribute("message", message);
+		model.addAttribute("message", message);
 
 		return view;
 	}

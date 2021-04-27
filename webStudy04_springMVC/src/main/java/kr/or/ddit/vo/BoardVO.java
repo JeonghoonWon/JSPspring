@@ -1,11 +1,14 @@
 package kr.or.ddit.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.validator.BoardInsertGroup;
 import kr.or.ddit.validator.DeleteGroup;
@@ -56,7 +59,25 @@ public class BoardVO implements Serializable{
 	private String bo_delete;
 	
 	private int startAttNo;
-	private List<AttatchVO> attatchList;
+	
+	private List<AttatchVO> attatchList;  //메타 데이터를 DB 에 넣기 위한 목적
+	private MultipartFile[] bo_files; // 파라미터도 넘어오지만 파트 데이터도 넘어오기 때문에 추가 해줘야 함.
+	
+	public void setBo_files(MultipartFile[] bo_files) {
+		this.bo_files = bo_files;
+		if(bo_files!=null) {
+			List<AttatchVO> attatchList = new ArrayList<>();
+			for(MultipartFile file : bo_files) {
+				if(file.isEmpty()) continue;
+				attatchList.add(new AttatchVO(file));
+			}
+			if(attatchList.size() > 0)	
+				this.attatchList = attatchList;
+				
+		}
+		
+	}
+	
 	private List<Reply2VO> replyList;
 	
 	private int[] delAttNos;

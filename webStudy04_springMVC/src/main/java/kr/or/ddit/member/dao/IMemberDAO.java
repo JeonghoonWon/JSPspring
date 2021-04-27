@@ -2,6 +2,8 @@ package kr.or.ddit.member.dao;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PagingVO;
 
@@ -9,6 +11,7 @@ import kr.or.ddit.vo.PagingVO;
  * 회원 관리 및 인증을 위한 Persistence Layer
  *
  */
+@Repository
 public interface IMemberDAO {
 	
 	/**

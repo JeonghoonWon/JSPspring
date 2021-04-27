@@ -11,9 +11,26 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
 <!-- 하위 컨테이너용 설정 파일  -->
 	
-	<!-- H.M /H.A / V.R 가 자동으로 추가 된다. -->
+	<!-- H.M /H.A / V.R / exception resolver 등이 자동으로 추가 된다. -->
 	
-	<annotation-driven /> 
+	<annotation-driven validator="validator"/> 
+	<!-- multipart resolver 도 자동 추가, 실행됨. 자동으로 등록해주는 기능이 버전마다 조금씩 다르다.  -->
+	
+	<!-- 검증을 담당하는 bean -->
+	<!-- 일반적으로 벨리데이터가 포함되어있음. annotation-driven에도 포함되어있지만 직접 입력해서 커스터마이징을 하려고 함.  -->
+	<!-- 아래 3가지를 사용해야 validator 1개가 완성되는것. -->
+	<beans:bean id="resourceBundleLocator" class="org.hibernate.validator.resourceloading.PlatformResourceBundleLocator" 
+		c:bundleName="kr.or.ddit.messages.errorMessages"
+	/>
+	
+	<beans:bean id="messageInterpolator" class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator" 
+		c:userResourceBundleLocator-ref="resourceBundleLocator"
+	/>
+	
+	<beans:bean id = "validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" 
+		p:messageInterpolator-ref ="messageInterpolator"
+	/>
+	
 	<resources location="/resources/" mapping="/resources/**" cache-period="0" />
 	<default-servlet-handler/>  
 	<!--  /resources/** : 상위 요청이 resource 인걸 다 받겠다.
@@ -26,8 +43,22 @@
 	<beans:bean id="IRVR" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
 		p:prefix="/WEB-INF/views/"
 		p:suffix=".jsp"
-	
 	/>
+	
+	<!-- IRVR이 안 좋은 점이 맞는 jsp를 찾지 못하면 404 에러를 내보냄 => 따라서 ViewResolver를 여러개 등록할때 가장 마지막에 등록을 해야 한다. 
+   => 따라서 p:order를 생략하면 integer가 줄수있는 가장큰값을 준다. -->
+	
+	
+	<!-- 한가지 영역에 두가지가 입력될때는 우선순위가정해져야한다. -->
+	<!--  -->
+	<beans:bean id="BNVR" class="org.springframework.web.servlet.view.BeanNameViewResolver" 
+		p:order="1"
+	/>
+	
+	<beans:bean id ="downloadView" class="kr.or.ddit.board.view.DownloadView" /> 
+	
+	<!-- 파일이 업로드가 되지않는경우 beans:bean 확인. 빈의 id 는 multipartResolver 를 사용해야함. H.A 가 알 수 있도록. 이미 injection 되어 있는것. 원본요청을 필터링 하는 역할. 원본을 wrapper로 . multipart file로.   -->
+	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></beans:bean>
 	
 	<context:component-scan base-package="kr.or.ddit" use-default-filters="false">
 			<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>

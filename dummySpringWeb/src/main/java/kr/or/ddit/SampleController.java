@@ -21,8 +21,9 @@ public class SampleController {
 	@RequestMapping("sample2.do")
 	public ModelAndView sample2() {  // void 로 해두고 view name 을 생략해두면  view name transrator가 자동적으로 작동  이럴땐, ModelAndView를 사용해서 return 값을 준다.
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("data","전달한 모델");
+		mav.addObject("data","전달한 모델2"); // mav에 addObject 를 사용해서 데이터값 넘겨줄 수 있음.
 		mav.setViewName("sample/view"); // retrun 값이 없어도 modelandview 로 넘겨줄 수 있다.
 		return mav;
+	
 	}
 }

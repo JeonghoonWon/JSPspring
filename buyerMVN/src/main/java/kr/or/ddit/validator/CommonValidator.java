@@ -11,8 +11,8 @@ import javax.validation.ValidatorFactory;
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.hibernate.validator.resourceloading.PlatformResourceBundleLocator;
 
-public class CommonValidator<T> {
-	private Validator validator;
+public class CommonValidator<T> { //범용적으로 사용하기 위해 T 사용
+	private Validator validator; 
 	
 	{
 		ValidatorFactory factory = Validation.byDefaultProvider()

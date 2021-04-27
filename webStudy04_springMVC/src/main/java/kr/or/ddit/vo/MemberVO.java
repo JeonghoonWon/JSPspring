@@ -41,7 +41,7 @@ import lombok.ToString;
 // 필요한 getter/setter/equals /tostring 있을때 annotation 사용
 //@Getter
 //@Setter
-@EqualsAndHashCode(of= {"mem_id","mem_regno1","mem_regno2"}) // id가 같으면 이란 조건 생성
+@EqualsAndHashCode(of= {"mem_id","mem_regno1","mem_regno2"}) // id가 같으면 이런 조건 생성
 @ToString(exclude= {"mem_pass","mem_regno1","mem_regno2", "mem_img"}) //exclude : 제외하고 표시
 @Data // java bean 규약 에 맞는 getter/setter/equals/tostring 불러올 수 있음.
 @NoArgsConstructor // 기본 생성자 자동생성

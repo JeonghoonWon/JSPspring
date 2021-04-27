@@ -1,75 +1,81 @@
 package kr.or.ddit.board.controller;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-
 import kr.or.ddit.board.service.BoardServiceImpl;
 import kr.or.ddit.board.service.IBoardService;
-import kr.or.ddit.mvc.annotation.Controller;
-import kr.or.ddit.mvc.annotation.RequestMapping;
-import kr.or.ddit.mvc.annotation.RequestMethod;
-import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
-import kr.or.ddit.mvc.annotation.resolvers.RequestPart;
-import kr.or.ddit.mvc.filter.wrapper.MultipartFile;
 import kr.or.ddit.vo.AttatchVO;
 
 @Controller
 public class BoardFileController {
 	// 파일하나에 대한 메타 데이터를 가져와야 하기 때문에 IAttatchDAO 필요.
-	// 게시판을 싱글톤 적용하지않은 이유 : 알아서 스프링에서 해주기 때문에. 
+	// 게시판을 싱글톤 적용하지않은 이유 : 알아서 스프링에서 해주기 때문에.
 	// 클라이언트가 바로 폴더로 접근 할 수 없기 때문에 handler 를 만들어서 접근 할 수 있게 처리한다.
-	//   private IAttatchDAO service = AttatchDAOImpl.getInstance();
-	   private IBoardService service = BoardServiceImpl.getInstance();
-	   
-	   @RequestMapping("/board/download.do")
-	   public String download(
-	         @RequestParam("what") int att_no
-	         , HttpServletResponse resp
-	         , HttpServletRequest req
-	         ) throws IOException {
-		   AttatchVO attatch = service.download(att_no);
-		   File saveFolder = new File("d:/attatches");
-		   File saveFile = new File(saveFolder, attatch.getAtt_savename());
-		   //user 정보 받아오기
-		   String agent = req.getHeader("User-Agent");
-		   String filename = attatch.getAtt_filename();
-		   if(StringUtils.containsIgnoreCase(agent, "trident")) {
-			   filename = URLEncoder.encode(filename,"UTF-8").replaceAll("\\+"," "); // "+" 를 그냥 사용하면 정규식으로 사용되기 때문에 escape 시켜야한다. "\+"
-		   }else {
-			   byte[] bytes = filename.getBytes();
-			   filename = new String(bytes,"ISO-8859-1");
-		   }
-		   
-		   // 출력 스트림을 개방 하기 전에 처리 다운로드시 파일 이름 설정.
-		   resp.setHeader("Content-Disposition","attatchment;filename=\""+filename+"\"");
-		   resp.setHeader("Content-Length", attatch.getAtt_size()+"");// header의 값은 문자열로만 가능하기 때문에 size의 long type 을 +"" 로 문자열로 바꿔준다.
-		   resp.setContentType("application/octet-stream"); // 저장을 하기 위해선 기본 마임대신 2진 데이터를 보내준다. 바이트 단위로? 
-		   try(
-				   OutputStream os = resp.getOutputStream();
+	// private IAttatchDAO service = AttatchDAOImpl.getInstance();
+	
+	@Inject	
+	private WebApplicationContext container;
+	
+	@Inject
+	private IBoardService service;
+	@Value("#{appInfo.boardImages}")
+	private String saveFolderURL;
+	File saveFolder;
+		
+	
+	private ServletContext application;
+	// @Inject를 통해 자기자신에게 등록된 빈에게 자기 자신의 레퍼런스를 넣어줄 수 있음.
+//	@Inject
+//	public void setContainer(WebApplicationContext container) {
+//		this.container = container;
+//		application = container.getServletContext();
+//		
+//	}
+	@PostConstruct // injection이 끝난 후 life cycle callback 을 호출하는 annotation
+	public void init() {
+		application = container.getServletContext(); // injection 이 끝난 다음에 호출. 
+		String saveFolderPath = application.getRealPath(saveFolderURL);
+		saveFolder = new File(saveFolderPath);
+	
+	}
+	
+	@RequestMapping("/board/download.do")
+	public String download(
+			@RequestParam("what") int att_no
+			, Model model
 			){
-			   FileUtils.copyFile(saveFile, os);
-		   }
-		   return null;
-	   }
-	   
-	  
+		AttatchVO attatch = service.download(att_no);  
+		 model.addAttribute("attatch", attatch);
+		return "downloadView";
+	}
+
 //		   
 //		   
 //		   int buffer_size = 1024 * 100;
@@ -177,40 +183,39 @@ public class BoardFileController {
 //	      return encodedFilename;
 //	   }
 
-   @RequestMapping(value="/board/boardImage.do", method=RequestMethod.POST)
-   public String imageUpload(
-      @RequestPart("upload") MultipartFile upload
-      , HttpServletRequest req
-      , HttpServletResponse resp
-   ) throws IOException {
-      String saveFolderURL = "/boardImages";
-      String saveFolderPath = req.getServletContext().getRealPath(saveFolderURL);
-      File saveFolder = new File(saveFolderPath);
-    		  
-      if(!saveFolder.exists()) { 
-          saveFolder.mkdirs();   //파일이 존재하지 않는다면 파일을 만든다.
-       }
-      
-      //마살링할때 vo가 없으면 map을 통해 객체를 넘어줄 것을 만든다.
-      Map<String, Object> resultMap = new HashMap<>();
-      if(!upload.isEmpty()){
-         upload.saveTO(saveFolder);
-         int uploaded = 1;
-         String filename = upload.getOriginalFilename();
-         String saveName = upload.getUniqueSaveName();
-         String url = req.getContextPath() + saveFolderURL + "/" + saveName;
-         resultMap.put("uploaded", uploaded);
-         resultMap.put("fileName", filename);
-         resultMap.put("url", url);
-      }
-      //-----이 코드까지가 업로드하는 과정
-      resp.setContentType("application/json;charset=UTF-8");
-      try(
-         PrintWriter out = resp.getWriter();
-      ){
-         ObjectMapper mapper = new ObjectMapper();
-         mapper.writeValue(out, resultMap);
-      }
-      return null;
-   }
+	@RequestMapping(value = "/board/boardImage.do"
+			, method = RequestMethod.POST
+			, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)  //"application/json;charset=UTF-8" 대신 사용. 하드코딩 할 필요 없다.
+	@ResponseBody // body 를 통해 전달 해준다는 annotaion 이걸 H.A 가 가져감. H.A 에서 마샬링, 직렬화 진행
+	public Map<String, Object> imageUpload(@RequestPart("upload") MultipartFile upload) throws IllegalStateException, IOException // resp를 지웠음. 이젠 마샬링,직렬화 우리가 할 필요 없다.
+			 {
+		
+		// 인젝션 전역변수로 빼야하고 서블릿 컨텍스트 해야함. 세이브 폴터를 언제 만들지 어플리케이션 다 들어온다음에 인젝션 받은 다음에 .
+
+
+		if (!saveFolder.exists()) {
+			saveFolder.mkdirs(); // 파일이 존재하지 않는다면 파일을 만든다.
+		}
+
+		// 마살링할때 vo가 없으면 map을 통해 객체를 넘어줄 것을 만든다.
+		Map<String, Object> resultMap = new HashMap<>();
+		if (!upload.isEmpty()) {  
+			String saveName = UUID.randomUUID().toString(); //upload.getUniqueSaveName(); 저장명 설정. 저장명은 다양하게 사용 할 수 있기때문에.
+		//	upload.saveTO(saveFolder);
+			upload.transferTo(new File(saveFolder, saveName));
+			int uploaded = 1;
+			String filename = upload.getOriginalFilename();
+			String url = application.getContextPath() + saveFolderURL + "/" + saveName;
+			resultMap.put("uploaded", uploaded);
+			resultMap.put("fileName", filename);
+			resultMap.put("url", url);
+		}
+		// -----이 코드까지가 업로드하는 과정
+//		resp.setContentType("application/json;charset=UTF-8");  마샬링 
+//		try (PrintWriter out = resp.getWriter();) { 직렬화
+//			ObjectMapper mapper = new ObjectMapper();
+//			mapper.writeValue(out, resultMap);
+//		}
+		return resultMap;
+	}
 }

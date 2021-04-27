@@ -22,7 +22,7 @@ import kr.or.ddit.vo.PagingVO;
 
 @Controller
 public class BuyerReadController{
-	private IBuyerService service = new BuyerServiceImpl();
+	private IBuyerService service = BuyerServiceImpl.getInstance();
 	private IOthersDAO othersDAO = OthersDAOImpl.getInstance();
 	
 	private void addAttribute(HttpServletRequest req) {

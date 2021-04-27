@@ -9,11 +9,6 @@ import kr.or.ddit.vo.PagingVO;
 /**
  * 회원 관리(CRUD)를 위한 Business Layer 
  * 
- *
- */
-/**
- * @author PC-19
- *
  */
 public interface IMemberService {
 	
