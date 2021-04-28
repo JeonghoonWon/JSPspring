@@ -55,6 +55,18 @@
 		p:order="1"
 	/>
 	
+	<!--xml 로딩을 위한 configure 필요함. p:definitions  definition의 이름과 경로. *-definition 을 통해 다양하게 적용할 수 있도록.   -->
+	<beans:bean class="org.springframework.web.servlet.view.tiles3.TilesConfigurer" 
+		p:definitions="/WEB-INF/tiles/*-definitions.xml"
+		p:preparerFactoryClass="org.springframework.web.servlet.view.tiles3.SpringBeanPreparerFactory"
+	/>
+	 <!--IRVR 보단 우선순위가 높아야한다. 논리적인 view  name 과 똑같은 definition을 찾는다.  -->
+	<beans:bean id="TVR" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver" 
+		p:order="2"
+	/>
+	
+	
+	
 	<beans:bean id ="downloadView" class="kr.or.ddit.board.view.DownloadView" /> 
 	
 	<!-- 파일이 업로드가 되지않는경우 beans:bean 확인. 빈의 id 는 multipartResolver 를 사용해야함. H.A 가 알 수 있도록. 이미 injection 되어 있는것. 원본요청을 필터링 하는 역할. 원본을 wrapper로 . multipart file로.   -->
@@ -63,6 +75,7 @@
 	<context:component-scan base-package="kr.or.ddit" use-default-filters="false">
 			<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 			<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+			<context:include-filter type="annotation" expression="kr.or.ddit.annotation.ViewPreparer"/>
 	</context:component-scan>
 
 </beans:beans>

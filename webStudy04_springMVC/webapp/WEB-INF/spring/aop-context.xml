@@ -11,6 +11,7 @@
 
 <!-- beans, c, p, aop, tx  -->
 	<aop:aspectj-autoproxy/>
-
+	
+	
 	<tx:annotation-driven />
 </beans>

@@ -2,14 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>   
  
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<jsp:include page="/includee/preScript.jsp"></jsp:include>
-</head>
-<body>
+
+
 <h4>회원 목록 조회</h4>
 <table>
 	<thead>
@@ -116,5 +110,3 @@
 		return false;
 	});
 </script>
-</body>
-</html>

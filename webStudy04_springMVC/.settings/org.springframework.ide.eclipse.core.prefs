@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+org.springframework.ide.eclipse.core.locator.enable.org.springframework.ide.eclipse.beans.core.annotatedJavaConfigLocator=true
+org.springframework.ide.eclipse.core.locator.enable.org.springframework.ide.eclipse.beans.core.bootJavaConfigLocator=true

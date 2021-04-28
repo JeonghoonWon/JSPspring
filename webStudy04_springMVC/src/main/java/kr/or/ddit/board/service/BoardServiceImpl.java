@@ -96,8 +96,8 @@ public class BoardServiceImpl implements IBoardService {
 			cnt += attatchDAO.insertAttatches(board);
 			try {
 				for(AttatchVO attatch : attatchList) {
-//					if(1==1)
-//						throw new RuntimeException("강제 발생 예외");
+					if(1==1)
+						throw new RuntimeException("강제 발생 예외");
 					attatch.saveTo(saveFolder);
 				}
 			}catch (IOException e) {

@@ -2,12 +2,15 @@ package kr.or.ddit.prod.dao;
 
 import static org.junit.Assert.*;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 
 import kr.or.ddit.vo.ProdVO;
 
 public class ProdDAOImplTest {
-	private IProdDAO dao = ProdDAOImpl.getInstance();
+	@Inject
+	private IProdDAO dao;
 	
 	
 	

@@ -1,19 +1,20 @@
 package kr.or.ddit.servlet01;
 
-import javax.servlet.http.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import kr.or.ddit.mvc.annotation.Controller;
-import kr.or.ddit.mvc.annotation.RequestMapping;
-import kr.or.ddit.mvc.annotation.resolvers.RequestParam;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
-
-import java.io.*;
-import java.net.URLEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 //@WebServlet("/01/image.do") //클라이언트가 정보를 선택하고 넘겨준다.
-@Controller
+//@Controller
 public class ImageServlet {
 
 	@RequestMapping("/01/image.do")

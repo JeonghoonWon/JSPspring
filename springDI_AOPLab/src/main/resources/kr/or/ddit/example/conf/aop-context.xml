@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+	<!-- 1. target 운영 bean 등록
+		2.
+		3. advice bean  등록
+		4. weaving  -->
+	<bean id="loggingAdvice" class="kr.or.ddit.exemple.advice.LoggingAdvice"></bean>
+	<!--  annotation 기반으로 모든 설정 가능 -->
+	<aop:aspectj-autoproxy />
+	
+<!-- 	<aop:config> -->
+<!-- 		<aop:pointcut expression="execution(* kr.or.ddit.exemple..service.*.*(..))" id="pointcut"/>   모든 뎁스 구조 중 service가 포함되어있고 argument 이것저것. 리턴타입은 아무거나.  -->
+<!-- 		<aop:aspect ref="loggingAdvice"> -->
+			<!-- method 시작  전 후 실행시기 정하기.  -->
+<!-- 			<aop:before method="beforeAdvice" pointcut-ref="pointcut"/> -->
+<!-- 			<aop:after-returning method="afterAdvice" pointcut-ref="pointcut" returning="retValue"/> -->
+<!-- 			<aop:after-throwing method="afterTrowingAdvice" pointcut-ref="pointcut" throwing="e"/> -->
+<!-- 		<aop:around method="aroundAdvice" pointcut-ref="pointcut"/> -->
+<!-- 		</aop:aspect> -->
+<!-- 	</aop:config> -->
+
+</beans>

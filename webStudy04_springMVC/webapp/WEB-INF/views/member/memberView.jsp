@@ -2,14 +2,6 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>회원이름 클릭 페이지</title>
-<jsp:include page="/includee/preScript.jsp" />
-</head>
-<body>
 	
 	<h4>${member.mem_name} 님의 마이페이지</h4>
 	<table border="1">
@@ -169,6 +161,3 @@
 
 						});
 	</script>
-
-</body>
-</html>

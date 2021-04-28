@@ -2,13 +2,15 @@ package kr.or.ddit.board.dao;
 
 import static org.junit.Assert.*;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 
 import kr.or.ddit.vo.BoardVO;
 
 public class IBoardDAOTest {
-
-	private IBoardDAO dao = new BoardDAOImpl();
+	@Inject
+	private IBoardDAO dao;
 	
 	@Test
 	public void testSelectBoard() {

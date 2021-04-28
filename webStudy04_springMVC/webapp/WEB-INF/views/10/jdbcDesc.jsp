@@ -1,4 +1,4 @@
-<%@page import="kr.or.ddit.db.ConnectionFactory"%>
+
 <%@page import="java.util.Map.Entry"%>
 <%@page import="java.util.HashMap"%>
 <%@page import="java.sql.ResultSetMetaData"%>

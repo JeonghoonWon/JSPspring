@@ -28,6 +28,7 @@ import kr.or.ddit.vo.BuyerVO;
 import kr.or.ddit.vo.ProdVO;
 
 @Controller
+@RequestMapping("/prod/prodUpdate.do")
 public class ProdUpdateController {
 	@Inject
 	private IProdService service;
@@ -41,7 +42,7 @@ public class ProdUpdateController {
 		model.addAttribute("buyerList", buyerList);
 	}
 
-	@RequestMapping("/prod/prodUpdate.do")
+	@RequestMapping
 	// 상품을 아무나 등록해선 안되기때문에 보호 할 자원
 	public String updateForm(
 			@RequestParam("what") String prod_id
