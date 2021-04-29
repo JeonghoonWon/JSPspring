@@ -28,6 +28,10 @@ root level : debug 이상으로 등록된 message를 모두 남기겠다. -->
       <AppenderRef ref="Console"/>
     </Logger>
     
+ <Logger name="org.springframework.test.web.servlet.result" level="debug" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    
     <Root level="error">
       <AppenderRef ref="Console"/>
     </Root>

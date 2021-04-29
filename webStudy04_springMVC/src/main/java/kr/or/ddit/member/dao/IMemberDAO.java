@@ -1,6 +1,7 @@
 package kr.or.ddit.member.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -57,6 +58,8 @@ public interface IMemberDAO {
 	public List<MemberVO> selectMemberList(PagingVO pagingVO);
 	
 	public int selectTotalRecord(PagingVO<MemberVO> pagingVO);
+	 
+	public void realDeleteMembers(Map<String, Object> pMap);   // 프로시져를 통해 진행되는데 프로시져는 returntype 이 없기때문에 void
 }
 
 

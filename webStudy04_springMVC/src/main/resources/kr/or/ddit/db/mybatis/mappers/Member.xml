@@ -169,4 +169,12 @@
 		 <!-- if where를 사용하기 위해선 paging 이 넘어와야 한다. -->
 		<include refid="searchFrag" />
 	</select>
+	
+	<select id="realDeleteMembers" parameterType="map" statementType="CALLABLE">  <!-- 면 콜러블 스테이트먼트가 있어야 프로시져 호출 할 수 있는 쿼리 객체가 만들어진다.. {}익명블럭으로 특정 프로시져 호출CALL -->
+		{
+			CALL MEMBERDELETEPROC(#{delcount,mode=OUT, javaType=java.lang.Integer,jdbcType=NUMERIC})
+			<!-- #{delcount,mode=OUT,javaType=java.lang.Integer} : OUT BOUND 값이기 때문에 mode 도 지정해둔다.  또한, 넘버데이터가 db 에서 넘어오기때문에 자바로 올때의 형식 지정해준다 -->
+		}
+	</select>
+	
 </mapper>

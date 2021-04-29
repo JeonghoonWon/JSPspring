@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>  
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %> 
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %> 
 
 
 <script type="text/javascript" src="${cPath }/js/ckeditor/ckeditor.js"></script>
@@ -16,7 +17,7 @@
 	<input type="hidden" name="bo_parent" value="${board.bo_parent }" />
 <table class="table table-bordered">
 	<tr>
-		<th>제목</th>
+		<th><spring:message code="board.bo_title"/></th>
 		<td>
 			<div class="input-group">
 				<input class="form-control col-9 mr-3" type="text" name="bo_title" 
@@ -27,7 +28,7 @@
 						${board.bo_sec eq 'Y' ? 'checked':'' }
 					/>
 					<label class="form-check-label" for="bo_sec">
-						비밀글
+						<spring:message code="board.bo_sec"/>
 					</label>
 				</div>
 				<form:errors path="bo_title" 
@@ -37,7 +38,7 @@
 	</tr>
 	<c:if test="${board.bo_type eq 'BOARD' }">
 		<tr>
-			<th>작성자</th>
+			<th><spring:message code="board.bo_writer"/></th>
 			<td><input class="form-control" type="text" name="bo_writer" 
 				value="${board.bo_writer }" />
 				<form:errors path="bo_writer" 
@@ -45,14 +46,14 @@
 			</td>
 		</tr>
 		<tr>
-			<th>비밀번호</th>
+			<th><spring:message code="board.bo_pass"/></th>
 			<td><input class="form-control" type="text" name="bo_pass"  />
 				<form:errors path="bo_pass" 
 					element="span" cssClass="error" />
 			</td>
 		</tr>
 		<tr>
-			<th>기존파일</th>
+			<th><spring:message code="board.attatchList"/></th>
 			<td>
 				<c:if test="${not empty board.attatchList }">
 					<c:forEach items="${board.attatchList }" var="attatch">
@@ -65,7 +66,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th>첨부파일</th>
+			<th><spring:message code="board.bo_files"/></th>
 			<td>
 				<div class="form-inline fileArea">
 					<p>
@@ -77,7 +78,7 @@
 		</tr>
 	</c:if>
 	<tr>
-		<th>내용</th>
+		<th><spring:message code="board.bo_content"/></th>
 		<td>
 			<textarea class="form-control" rows="5" cols="100" name="bo_content" id="bo_content">${board.bo_content }</textarea>
 			<form:errors path="bo_content" 

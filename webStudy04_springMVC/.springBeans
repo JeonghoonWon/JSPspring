@@ -11,8 +11,10 @@
 		<config>webapp/WEB-INF/spring/aop-context.xml</config>
 		<config>webapp/WEB-INF/spring/datasource-context.xml</config>
 		<config>webapp/WEB-INF/spring/root-context.xml</config>
+		<config>webapp/WEB-INF/spring/task-context.xml</config>
 	</configs>
 	<autoconfigs>
+		<config>java:kr.or.ddit.listener.spring.CustomContextListener</config>
 	</autoconfigs>
 	<configSets>
 	</configSets>

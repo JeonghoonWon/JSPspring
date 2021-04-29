@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import kr.or.ddit.board.service.BoardServiceImpl;
 import kr.or.ddit.board.service.IBoardService;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.utils.RegexUtils;
@@ -29,12 +30,14 @@ public class BoardInsertController {
 	private String[] filteringTokens = new String[] {"말미잘","해삼"};
 	
 	@Inject
-	private IBoardService service;
+	private IBoardService service;   //BoardServiceImpl : 실 구현체에선 프록시를 만들 수 없기 때문에 실행 불가.
 	
 	@PostConstruct
 	public void init() {
 		logger.info("주입된 service : {}", service.getClass().getName());
-		logger.info("프록시 여부  : {}", AopUtils.isAopProxy(service)); // false : 진짜 객체
+		logger.info("프록시 여부  : {}", AopUtils.isAopProxy(service)); // false : 진짜 객체  
+		// AopProxy 가 들어가있기 때문에 지금 이 코드가 실행되지않는것. 이게 없으면 실행된다. 아무리 다형성이 있더라도 IBoardService 와 BoardServiceImpl 는 형제 관계이기 때문에 
+		
 		
 	}
 

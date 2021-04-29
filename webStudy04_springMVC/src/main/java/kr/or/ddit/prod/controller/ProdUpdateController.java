@@ -32,15 +32,6 @@ import kr.or.ddit.vo.ProdVO;
 public class ProdUpdateController {
 	@Inject
 	private IProdService service;
-	@Inject
-	private IOthersDAO othersDAO;
-
-	private void addAttribute(Model model) {
-		List<Map<String, Object>> lprodList = othersDAO.selectLprodList();
-		List<BuyerVO> buyerList = othersDAO.selectBuyerList(null);
-		model.addAttribute("lprodList", lprodList);
-		model.addAttribute("buyerList", buyerList);
-	}
 
 	@RequestMapping
 	// 상품을 아무나 등록해선 안되기때문에 보호 할 자원
@@ -48,7 +39,7 @@ public class ProdUpdateController {
 			@RequestParam("what") String prod_id
 			, Model model) {
 
-		addAttribute(model);
+	
 		ProdVO prod = service.retrieveProd(prod_id);
 		model.addAttribute("prod", prod);
 		return "prod/prodForm";

@@ -27,22 +27,12 @@ import kr.or.ddit.vo.ProdVO;
 public class ProdInsertController {
 	@Inject
 	private IProdService service;
-	@Inject
-	private IOthersDAO othersDAO;
-	
-	private void addAttribute(Model model) {
-		List<Map<String, Object>> lprodList 
-			= othersDAO.selectLprodList();
-		List<BuyerVO> buyerList 
-			= othersDAO.selectBuyerList(null);
-		model.addAttribute("lprodList", lprodList);
-		model.addAttribute("buyerList", buyerList);
-	}
+
 
 	@RequestMapping
 	// 상품을 아무나 등록해선 안되기때문에 보호 할 자원
 	public String form(Model model) {
-		addAttribute(model);
+
 	return "prod/prodForm";
 	}
 
@@ -51,7 +41,7 @@ public class ProdInsertController {
 			@Validated(InsertGroup.class) @ModelAttribute("prod") ProdVO prod
 			, Errors errors
 			,Model model) throws IOException {
-		addAttribute(model);
+
 
 		String view = null;
 		String message = null;
