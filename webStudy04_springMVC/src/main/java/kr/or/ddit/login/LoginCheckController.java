@@ -21,7 +21,7 @@ import kr.or.ddit.exception.BadRequestException;
 import kr.or.ddit.member.service.IAuthenticateService;
 import kr.or.ddit.vo.MemberVO;
 
-//@WebServlet("/login/loginCheck.do")
+
 @Controller
 public class LoginCheckController{
 	// static final : logger 는 하나만 있으면 된다.

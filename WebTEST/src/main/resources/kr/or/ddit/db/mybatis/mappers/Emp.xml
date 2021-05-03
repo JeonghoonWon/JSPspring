@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.emp.dao.IEmployeeDAO">
+
+<select id="selectEmployeeForAuth" parameterType="string" resultType="EmployeeVO">
+		SELECT EMPLOYEE_ID, EMPLOYEE_PWD, EMPLOYEE_NAME
+		  	 , EMPLOYEE_PHONE , EMPLOYEE_EMAIL, EMPLOYEE_AUTHORITY
+             , EMPLOYEE_PICTURE
+	      FROM EMPLOYEE                                   
+		 WHERE EMPLOYEE_ID = #{employee_id}
+
+</select>
+
+<resultMap type="EmployeeVO" id="empMap" autoMapping="true">
+		<id property="employee_id" column ="EMPLOYEE_ID"/>
+</resultMap>
+
+	<!-- 코드 플레그먼트  -->
+	<sql id="searchFrag"> <!-- 코드의 일부분을 가지고 있음. -->
+		 <where>
+					 <if test="simpleSearch!=null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleSearch.searchWord)">
+					 	<choose> <!-- switch / case when end 구조  -->
+					 		<when test="simpleSearch.searchType eq 'name'">
+					 			INSTR(EMPLOYEE_ID, #{simpleSearch.searchWord}) > 0 
+					 		</when>
+					 		<when test="simpleSearch.searchType eq 'address'">
+					 			INSTR(EMPLOYEE_NAME, #{simpleSearch.searchWord}) > 0 
+					 		</when>
+					 		<otherwise> <!-- 전체 검색  -->
+					 			INSTR(EMPLOYEE_ID, #{simpleSearch.searchWord}) > 0 
+					 			OR
+					 			INSTR(EMPLOYEE_NAME, #{simpleSearch.searchWord}) > 0 
+					 		</otherwise>
+					 	</choose> 
+					
+					<!--  	<if test="simpleSearch.searchType eq 'name'">
+					 	
+					 	</if>
+					 	<if test="simpleSearch.searchType eq 'address'">
+					 	
+					 	</if> -->
+					 </if>
+				 </where>
+	</sql>
+
+
+	<select id="selectEmployeeList" resultType="EmployeeVO" parameterType="PagingVO">
+		 SELECT B.*
+		 FROM (
+			 SELECT A.*, ROWNUM RNUM
+			 FROM(
+				 SELECT ROWID RID, EMPLOYEE_ID, EMPLOYEE_PWD ,     
+				 EMPLOYEE_EMAIL, EMPLOYEE_PICTURE     
+   
+				 FROM EMPLOYEE 
+					<include refid="searchFrag" />
+				 ORDER BY RID DESC
+			 ) A
+		 ) B
+		 <![CDATA[
+			 WHERE RNUM >= #{startRow} AND RNUM <= #{endRow} 
+		 ]]>
+		 
+		 </select>
+		 
+		 	<select id="selectTotalRecord" resultType="int"
+				parameterType="PagingVO">
+		SELECT COUNT(*)
+		FROM EMPLOYEE
+		 <!-- if where를 사용하기 위해선 paging 이 넘어와야 한다. -->
+		<include refid="searchFrag" />
+	</select>
+
+</mapper>
